@@ -115,7 +115,7 @@ public record MarginPosition
             unrealizedQuote += ValueAssessment.CalcQuote(unrealizedBase, tickPrice);
             unrealizedBase = 0;
         }
-        if (unrealizedQuote < 0) // Short broke quote liquidity
+        else if (unrealizedQuote < 0) // Short broke quote liquidity
         {
             unrealizedBase += ValueAssessment.CalcBase(unrealizedQuote, tickPrice);
             unrealizedQuote = 0;

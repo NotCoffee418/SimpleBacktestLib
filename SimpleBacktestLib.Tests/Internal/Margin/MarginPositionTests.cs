@@ -87,4 +87,31 @@ public class MarginPositionTests
         Assert.True(updatedBase >= 0);
         Assert.True(updatedQuote >= 0);
     }
+
+    [Fact]
+    public void CalculateUnrealizedBalances_Illiquid()
+    {
+        decimal baseCollateral = 0;
+        decimal quoteCollateral = 100;
+        MarginPosition longPos =
+            MarginPosition.GeneratePosition(
+            TradeType.MarginLong,
+            1000,
+            0,
+            quoteCollateral,
+            10,
+            0.1m);
+
+        // Calculate
+        (bool isLiquid, decimal updatedBase, decimal updatedQuote)
+            = longPos.CalculateUnrealizedBalances(800, baseCollateral, quoteCollateral);
+        decimal actualCombinedQuote = ValueAssessment.GetCombinedValue(AssetType.Quote, updatedBase, updatedQuote, 900);
+        decimal roundedActualCombinedQuote = Math.Round(actualCombinedQuote, 4);
+
+        // Assert
+        Assert.False(isLiquid);
+        Assert.Equal(-100m, roundedActualCombinedQuote);
+        Assert.Equal(-100m, updatedQuote);
+        Assert.True(updatedBase == 0);
+    }
 }
