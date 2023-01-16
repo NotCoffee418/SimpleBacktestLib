@@ -1,4 +1,6 @@
-﻿namespace SimpleBacktestLib;
+﻿using System.Globalization;
+
+namespace SimpleBacktestLib;
 
 /// <summary>
 /// Primary access point to the SimpleBacktestLib's core functions.
@@ -20,10 +22,24 @@ public class BacktestBuilder
             throw new ArgumentException("Candle data has already been set.");
         if (candleData is null || candleData.Count() == 0)
             throw new ArgumentException("Input candle data is null or empty.");
-        
+
+        // Validate dataset is in chronological order
+        var previousCandle = candleData.First();
+        if (candleData.Count() > 1)
+            foreach (var candle in candleData.Skip(1))
+            {
+                if (candle.Time < previousCandle.Time)
+                    throw new ArgumentException("Candle data is not in chronological order.");
+                previousCandle = candle;
+            }
+
         // Set data
-        BacktestSetup.CandleData = candleData;
-        return this;
+        BacktestSetup.CandleData = candleData.ToImmutableList();
+
+        // Set default evaluate time at the last month of data.
+        DateTime endEvaluateTime = candleData.Last().Time;
+        DateTime startEvaluateTime = endEvaluateTime.AddDays(-30);
+        return this.EvaluateBetween(startEvaluateTime, endEvaluateTime);
     }
 
     /// <summary>
@@ -36,6 +52,42 @@ public class BacktestBuilder
     {
         BacktestSetup.OnTickFunctions.Add(onTickFunction);
         return this;
+    }
+
+    /// <summary>
+    /// Specify a time range on which to run the backtest.
+    /// Data outside this range will be factoredin if OnTick or an indicator requires it, but they will not be evaluated for trading.
+    /// </summary>
+    /// <param name="start">Candles on or after this date will be evaluated</param>
+    /// <param name="end">Candles on or before this data will be evaluated</param>
+    /// <returns></returns>
+    public BacktestBuilder EvaluateBetween(DateTime start, DateTime end)
+    {
+        // Validate
+        if (BacktestSetup.CandleData is null)
+            throw new ArgumentException(nameof(EvaluateBetween) + " should be called after candle data is defined.");
+        if (start > end)
+            throw new ArgumentException("Start date is after end date.");
+
+        // Find indexes
+        BacktestSetup.EvaluateFirstIndex = BacktestSetup.CandleData.FindIndex(c => c.Time >= start);
+        BacktestSetup.EvaluateLastIndex = BacktestSetup.CandleData.FindIndex(c => c.Time > end) - 1;
+        return this;
+    }
+
+    /// <summary>
+    /// Shortcut function for EvaluateBetween with string inputs.
+    /// </summary>
+    /// <param name="startTimeStr">Parsable string</param>
+    /// <param name="endTimeStr"></param>
+    /// <exception cref="ArgumentException"></exception>
+    public BacktestBuilder EvaluateBetween(string startTimeStr, string endTimeStr)
+    {
+        if (!DateTime.TryParse(startTimeStr, out DateTime start))
+            throw new ArgumentException("startTimeStr could not be parsed.");
+        if (!DateTime.TryParse(endTimeStr, out DateTime end))
+            throw new ArgumentException("endTimeStr could not be parsed.");
+        return this.EvaluateBetween(start, end);
     }
 
     /// <summary>
