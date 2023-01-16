@@ -72,6 +72,12 @@ public class BacktestBuilder
         // Find indexes
         BacktestSetup.EvaluateFirstIndex = BacktestSetup.CandleData.FindIndex(c => c.Time >= start);
         BacktestSetup.EvaluateLastIndex = BacktestSetup.CandleData.FindIndex(c => c.Time > end) - 1;
+
+        // Handle end time being outside of the candle data range
+        // FindIndex would set it to -1, from which we subtract another 1, making it -2
+        if (BacktestSetup.EvaluateLastIndex < 0)
+            BacktestSetup.EvaluateLastIndex = BacktestSetup.CandleData.Count - 1;
+        
         return this;
     }
 
