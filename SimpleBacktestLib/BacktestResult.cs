@@ -1,6 +1,6 @@
 ﻿namespace SimpleBacktestLib;
 
-public class BacktestResults
+public class BacktestResult
 {    
     public List<BacktestTrade> Trades { get; internal set; }    
 }

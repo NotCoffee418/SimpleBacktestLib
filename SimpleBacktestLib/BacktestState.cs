@@ -20,5 +20,10 @@ public class BacktestState
     /// <summary>
     /// Describes an open margin position
     /// </summary>
-    public MarginPosition? ActiveMarginPosition { get; internal set; } = null;    
+    public MarginPosition? ActiveMarginPosition { get; internal set; } = null;
+
+    /// <summary>
+    /// Internal-only properties of the backtest state.
+    /// </summary>
+    internal SetupDefinitions InternalState { get; set; } = new();
 }

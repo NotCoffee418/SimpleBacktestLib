@@ -5,6 +5,8 @@ global using System.Text;
 global using System.Threading.Tasks;
 global using SimpleBacktestLib.Internal.Logic;
 global using System.Runtime.CompilerServices;
-
+global using System.Collections.Immutable;
+global using SimpleBacktestLib.Internal.Models;
+    
 // Allow tests on internal functions
 [assembly: InternalsVisibleToAttribute("SimpleBacktestLib.Tests")]
