@@ -109,6 +109,48 @@ public class BacktestBuilder
     }
 
     /// <summary>
+    /// Specify which price to use for evaluating trades and executing them.
+    /// Defaults to candle open price.
+    /// </summary>
+    /// <param name="atTime"></param>
+    /// <returns></returns>
+    public BacktestBuilder WithCandlePriceTime(PriceTime atTime)
+    {
+        BacktestSetup.CandlePriceTime = atTime;
+        return this;
+    }
+
+    /// <summary>
+    /// Specify the default order size when trading the quote asset.
+    /// By default, it will use the full available balance (Max).
+    /// This can be overridden in the trading strategy.
+    /// </summary>
+    /// <param name="type">Define the meaning of the amount</param>
+    /// <param name="amount">Amount or value</param>
+    /// <returns></returns>
+    public BacktestBuilder WithDefaultQuoteOrderSize(AmountType type, decimal amount)
+    {
+        BacktestSetup.DefaultQuoteAmountType = type;
+        BacktestSetup.DefaultQuoteAmountRequest = amount;
+        return this;
+    }
+    
+    /// <summary>
+    /// Specify the default order size when trading the base asset.
+    /// By default, it will use the full available balance (Max).
+    /// This can be overridden in the trading strategy.
+    /// </summary>
+    /// <param name="type">Define the meaning of the amount</param>
+    /// <param name="amount">Amount or value</param>
+    /// <returns></returns>
+    public BacktestBuilder WithDefaultBaseOrderSize(AmountType type, decimal amount)
+    {
+        BacktestSetup.DefaultBaseAmountType = type;
+        BacktestSetup.DefaultBaseAmountRequest = amount;
+        return this;
+    }
+
+    /// <summary>
     /// Run the backtest asynchronously.
     /// </summary>
     /// <returns></returns>

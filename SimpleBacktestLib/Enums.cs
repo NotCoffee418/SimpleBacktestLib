@@ -38,3 +38,36 @@ public enum Timeframe
     OneMonth = 2592000,
     OneYear = 31536000
 }
+
+/// <summary>
+/// Can be used to define at which pricepoint during the lifetime of a candle to buy.
+/// Used by BacktestCandle.GetPrice()
+/// </summary>
+public enum PriceTime
+{
+    AtOpen = 0,
+    AtClose = 1,
+    AtHigh = 2,
+    AtLow = 3,
+    AtRandom = 4,
+}
+
+/// <summary>
+/// Status of a trade request or evaluated trade.
+/// </summary>
+public enum TradeStatus
+{
+    Pending = 0,
+    Executed = 1,
+    Cancelled = 2,
+}
+
+/// <summary>
+/// Define the meaning of a user-specified amount for trading.
+/// </summary>
+public enum AmountType
+{
+    Max = 0, // Trades the entire available balance. Amount is ignored.
+    Fixed = 1, // Specify a fixed amount to trade
+    Percentage, // Specify a percentage of the remaining available balance to trade 
+}
