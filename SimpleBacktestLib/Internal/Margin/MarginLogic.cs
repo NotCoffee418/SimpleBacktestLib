@@ -50,45 +50,6 @@ internal static class MarginLogic
         return (isLiquid, unrealizedBase, unrealizedQuote);
     }
 
-    /// <summary>
-    /// Returns a new margin position as a scaled out version of an existing one.
-    /// </summary>
-    /// <param name="scaleOutAmount">Value of InitialTradeAmount. So input liquidity.</param>
-    /// <param name="tickPrice"></param>
-    /// <returns></returns>
-    internal static MarginPosition ScaleOut(MarginPosition orig, decimal scaleOutAmount, decimal tickPrice, decimal newBaseCollateral, decimal newQuoteCollateral)
-    {
-        throw new NotImplementedException();
-        // Validate
-        if (orig.IsClosed)
-            throw new ArgumentException("Cannot scale out a closed position.");
-        if (scaleOutAmount <= 0)
-            throw new ArgumentException("scaleOutAmount <= 0.");
-        if (scaleOutAmount > orig.InitialTradedAmount)
-            throw new ArgumentException("Cannot scale out more than the original position size.");
-
-        // Calculate new values
-        decimal newInitialAmount = orig.InitialTradedAmount - scaleOutAmount;
-        decimal directionValue = orig.MarginDirection == TradeType.MarginLong ? -1 : 1;
-        decimal newOpenPrice = orig.OpenPrice + (directionValue * ((scaleOutAmount / newInitialAmount) * (tickPrice - orig.OpenPrice)));
-
-        // Catch any errors generating the new position and return
-        try
-        {
-            return MarginPosition.GeneratePosition(
-                orig.MarginDirection,
-                newOpenPrice,
-                orig.BorrowedAmount,
-                newBaseCollateral,
-                newQuoteCollateral,
-                orig.LeverageRatio,
-                orig.LiquidationRatio);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("Error generating scaled out out margin position.", ex);
-        }
-    }
     
     /// <summary>
     /// Determine the asset type we need to, or have borrowed depending on the direction of our margin trade.
