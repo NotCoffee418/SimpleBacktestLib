@@ -151,6 +151,34 @@ public class BacktestBuilder
     }
 
     /// <summary>
+    /// Define the quote trading balance.
+    /// Default quote budget is 10000.
+    /// </summary>
+    /// <param name="quoteBudget">Amount of quote asset to start the backtest with</param>
+    /// <returns></returns>
+    public BacktestBuilder WithQuoteBudget(decimal quoteBudget)
+    {
+        if (quoteBudget <= 0)
+            throw new ArgumentException("Quote budget must be greater than 0.");
+        BacktestSetup.QuoteBudget = quoteBudget;
+        return this;
+    }
+
+    /// <summary>
+    /// Define the base trading balance.
+    /// By default, the base budget is 0 since we start with a quote budget instead.
+    /// </summary>
+    /// <param name="baseBudget">Amount of base asset to start the backtest with</param>
+    /// <returns></returns>
+    public BacktestBuilder WithBaseBudget(decimal baseBudget)
+    {
+        if (baseBudget < 0)
+            throw new ArgumentException("Base budget cannot be negative.");
+        BacktestSetup.BaseBudget = baseBudget;
+        return this;
+    }
+
+    /// <summary>
     /// Run the backtest asynchronously.
     /// </summary>
     /// <returns></returns>

@@ -6,6 +6,8 @@
 /// </summary>
 internal class SetupDefinitions
 {
+    internal decimal QuoteBudget { get; set; } = 10000;
+    internal decimal BaseBudget { get; set; } = 0;
     internal AmountType DefaultQuoteAmountType { get; set; } = AmountType.Max;
     internal decimal DefaultQuoteAmountRequest { get; set; }
     internal AmountType DefaultBaseAmountType { get; set; } = AmountType.Max;
