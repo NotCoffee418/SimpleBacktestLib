@@ -68,6 +68,6 @@ public enum TradeStatus
 public enum AmountType
 {
     Max = 0, // Trades the entire available balance. Amount is ignored.
-    Fixed = 1, // Specify a fixed amount to trade
+    Absolute = 1, // Specify a fixed amount to trade
     Percentage, // Specify a percentage of the remaining available balance to trade 
 }

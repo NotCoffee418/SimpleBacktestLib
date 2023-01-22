@@ -19,7 +19,7 @@ public record MarginPosition
     /// Amount we exchanged the borrowed amount into.
     /// Longs get base. Shorts get quote.
     /// </summary>
-    public decimal InitialTradeAmount { get; private init; }
+    public decimal InitialTradedAmount { get; private init; }
 
     /// <summary>
     /// Direction for our trade. Should only be long or short.
@@ -36,13 +36,50 @@ public record MarginPosition
     /// When the combined liquidity drops below this ratio, the margin position closes at a loss.
     /// </summary>
     public decimal LiquidationRatio { get; private init; }
+    
+    /// <summary>
+    /// Is the position closed?
+    /// </summary>
+    public bool IsClosed { get; private set; } = false;
 
+
+    /// <summary>
+    /// Shortcut function for GeneratePosition witout specifying the amount.
+    /// Instead, values from setup definition can be passed in to get the approperiate amount.
+    /// </summary>
+    /// <param name="marginAmountType"></param>
+    /// <param name="marginAmountRequested">Not literal! Meaning depends on marginAmountType.</param>
+    /// <param name="direction"></param>
+    /// <param name="openPrice"></param>
+    /// <param name="baseCollateral"></param>
+    /// <param name="quoteCollateral"></param>
+    /// <param name="leverageRatio"></param>
+    /// <param name="liquidationRatio"></param>
+    /// <returns></returns>
+    internal static MarginPosition GeneratePosition(
+        TradeType direction,
+        decimal openPrice,
+        TradeInput tradeInput,
+        decimal baseCollateral,
+        decimal quoteCollateral,
+        decimal leverageRatio,
+        decimal liquidationRatio)
+    {
+        // Calculate borrow amount from an AmountType & amountRequested
+        AssetType borrowAsset = MarginLogic.GetBorrowAssetType(direction);
+        decimal maxBorrowable = leverageRatio * ValueAssessment.GetCombinedValue(borrowAsset, baseCollateral, quoteCollateral, openPrice);
+        (decimal borrowAmount, _) = tradeInput.GetLiteralValue(maxBorrowable);
+
+        // Generate the position
+        return GeneratePosition(direction, openPrice, borrowAmount, baseCollateral, quoteCollateral, leverageRatio, liquidationRatio);
+    }
 
     /// <summary>
     /// Create a margin position using all baseCollateral and quoteCollateral
     /// </summary>
     /// <param name="direction"></param>
-    /// <param name="openPrice"></param>
+    /// <param name="openPrice">Price at which to create the position</param>
+    /// <param name="borrowAmount">Amount to borrow. Quote for long, base for short.</param>
     /// <param name="baseCollateral">Will be fully used as collateral and still be available for other trades</param>
     /// <param name="quoteCollateral">Will be fully used as collateral and still be available for other trades</param>
     /// <param name="leverageRatio">Ratio of the borrowed amount relative to the collateral. 5x margin on 1000$ is 5000$ position</param>
@@ -51,96 +88,51 @@ public record MarginPosition
     internal static MarginPosition GeneratePosition(
         TradeType direction,
         decimal openPrice,
+        decimal borrowAmount,
         decimal baseCollateral,
         decimal quoteCollateral,
-        decimal leverageRatio = 1,
-        decimal liquidationRatio = 0.1m)
+        decimal leverageRatio,
+        decimal liquidationRatio)
     {
-        // Determine the starting amount we can use as collateral, as valued in the asset we want to borrow
-        AssetType borrowAsset = GetBorrowAssetType(direction);
-        decimal collateralValue = ValueAssessment.GetCombinedValue(borrowAsset, baseCollateral, quoteCollateral, openPrice);
+        if (direction != TradeType.MarginLong && direction != TradeType.MarginShort)
+            throw new ArgumentException("Margin position must be long or short.");
 
-        // Apply leverage to determine the amount borrowed
-        decimal borrowedAmount = collateralValue * leverageRatio;
+        // Determine the max amount we can borrow.
+        AssetType borrowAsset = MarginLogic.GetBorrowAssetType(direction);
+        decimal collateralValue = ValueAssessment.GetCombinedValue(borrowAsset, baseCollateral, quoteCollateral, openPrice);
+        decimal maxBorrowAmount = collateralValue * leverageRatio;
 
         // Determine the amount it exchanges for
         // Longs get base, shorts get quote
         decimal tradedAmount = direction == TradeType.MarginLong ?
-            borrowedAmount / openPrice : openPrice * borrowedAmount;
+            borrowAmount / openPrice : openPrice * borrowAmount;
 
         // Validate
-        if (borrowedAmount <= 0)
+        if (borrowAmount <= 0)
             throw new ArgumentException("borrowedAmount <= 0.");
+        if (borrowAmount > maxBorrowAmount)
+            throw new ArgumentException("borrowAmount > maxBorrowAmount");
 
         // Return the order type
         return new MarginPosition
         {
             OpenPrice = openPrice,
-            BorrowedAmount = borrowedAmount,
-            InitialTradeAmount = tradedAmount,
+            BorrowedAmount = borrowAmount,
+            InitialTradedAmount = tradedAmount,
             MarginDirection = direction,
             LeverageRatio = leverageRatio,
             LiquidationRatio = liquidationRatio,
         };
     }
 
-    /// <summary>
-    /// Calculate unrealized balances factoring in this margin position.
-    /// Returns the balances as they would be if the position were closed right now.
-    /// </summary>
-    /// <param name="tickPrice"></param>
-    /// <param name="baseCollateral"></param>
-    /// <param name="quoteCollateral"></param>
-    /// <returns></returns>
-    internal (bool IsLiquid, decimal UnrealizedBase, decimal UnrealizedQuote)
-        CalculateUnrealizedBalances(decimal tickPrice, decimal baseCollateral, decimal quoteCollateral)
-    {
-        // Determine asset used to borrow
-        AssetType borrowedAsset = GetBorrowAssetType(MarginDirection);
-        decimal repayableAmountInBorrowedAsset = MarginDirection == TradeType.MarginLong ?
-            ValueAssessment.CalcQuote(InitialTradeAmount, tickPrice) : ValueAssessment.CalcBase(InitialTradeAmount, tickPrice);
-        decimal borrowedPlOnLoan = repayableAmountInBorrowedAsset - BorrowedAmount;
-
-        // Calculate updated balances
-        decimal unrealizedBase = baseCollateral;
-        decimal unrealizedQuote = quoteCollateral;
-        if (MarginDirection == TradeType.MarginLong)
-            unrealizedBase += ValueAssessment.CalcBase(borrowedPlOnLoan, tickPrice);
-        else if (MarginDirection == TradeType.MarginShort)
-            unrealizedQuote += ValueAssessment.CalcQuote(borrowedPlOnLoan, tickPrice);
-
-        // Handle negative collateral
-        if (unrealizedBase < 0) // Long broke base liquidity
-        {
-            unrealizedQuote += ValueAssessment.CalcQuote(unrealizedBase, tickPrice);
-            unrealizedBase = 0;
-        }
-        else if (unrealizedQuote < 0) // Short broke quote liquidity
-        {
-            unrealizedBase += ValueAssessment.CalcBase(unrealizedQuote, tickPrice);
-            unrealizedQuote = 0;
-        }
-
-        // Determine if liquid
-        decimal combinedCurrentCollateralInBorrowedAsset = ValueAssessment.GetCombinedValue(
-            borrowedAsset, unrealizedBase, unrealizedQuote, tickPrice);
-        bool isLiquid = combinedCurrentCollateralInBorrowedAsset > BorrowedAmount * LiquidationRatio;
-
-        // Return parsed results
-        return (isLiquid, unrealizedBase, unrealizedQuote);
-    }
-
 
     /// <summary>
-    /// Determine the asset type we need to, or have borrowed depending on the direction of our margin trade.
+    /// Mark a position as closed. Does not include profit/loss logic.
     /// </summary>
-    /// <returns></returns>
-    /// <exception cref="ArgumentException">Must be Long or Short</exception>
-    private static AssetType GetBorrowAssetType(TradeType direction)
+    internal void MarkAsClosed()
     {
-        if (direction != TradeType.MarginLong && direction != TradeType.MarginShort)
-            throw new ArgumentException("GetPosition() expects direction to be either MarginLong or MarginShort.");
-        return direction == TradeType.MarginLong ? AssetType.Quote : AssetType.Base;
+        if (IsClosed)
+            throw new InvalidOperationException("Position is already closed.");
+        IsClosed = true;
     }
-
 }

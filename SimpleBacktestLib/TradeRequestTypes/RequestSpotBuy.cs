@@ -3,24 +3,14 @@
 public class RequestSpotBuy : TradeRequest
 {
     /// <summary>
-    /// Amount to trade. Meaning changed by relative to AmountTypeOverride.
-    /// Falls back to backtest settings if null.
+    /// Defines the input amount for the trade
     /// </summary>
-    public decimal? AmountRequestOverride { get; internal set; } = null;
-
-    /// <summary>
-    /// Amount type. Define meaning for AmountRequestOverride.
-    /// Falls back to backtest settings if null.
-    /// </summary>
-    public AmountType? AmountTypeOverride { get; internal set; } = null;
+    public TradeInput RequestedInput { get; internal set; } // todo: should be set from default
 
     internal override void Execute(int candleIndex, BacktestState state)
     {
         decimal price = state.InternalState.CandleData[candleIndex].GetPrice(state.InternalState.CandlePriceTime);
-        (bool trueSpendAmountIsFullRequestedAmount, decimal trueSpendAmount) = ValueAssessment.GetSpendAmount(
-            AmountTypeOverride ?? state.InternalState.DefaultQuoteAmountType,
-            AmountRequestOverride ?? state.InternalState.DefaultQuoteAmountRequest,
-            state.QuoteBalance);
+        (decimal trueSpendAmount, bool trueSpendAmountIsFullRequestedAmount) = RequestedInput.GetLiteralValue(state.QuoteBalance);
 
         // Validate price and amount
         if (price <= 0)

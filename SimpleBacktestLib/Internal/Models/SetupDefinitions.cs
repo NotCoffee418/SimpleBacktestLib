@@ -8,10 +8,25 @@ internal class SetupDefinitions
 {
     internal decimal QuoteBudget { get; set; } = 10000;
     internal decimal BaseBudget { get; set; } = 0;
-    internal AmountType DefaultQuoteAmountType { get; set; } = AmountType.Max;
-    internal decimal DefaultQuoteAmountRequest { get; set; }
-    internal AmountType DefaultBaseAmountType { get; set; } = AmountType.Max;
-    internal decimal DefaultBaseAmountRequest { get; set; }
+
+    /// <summary>
+    /// Specify the default quote input size for spot trading.
+    /// </summary>
+    internal TradeInput DefaultSpotBuyOrderSize { get; set; } = new(AmountType.Max, 0);
+
+    /// <summary>
+    /// Specify the default base input size for spot trading.
+    /// </summary>
+    internal TradeInput DefaultSpotSellOrderSize { get; set; } = new(AmountType.Max, 0);
+
+    /// <summary>
+    /// Specify the default quote input size for margin trading.
+    internal TradeInput DefaultMarginLongOrderSize { get; set; } = new(AmountType.Max, 0);
+
+    /// <summary>
+    /// Specify the default base input size for margin trading.
+    /// </summary>
+    internal TradeInput DefaultMarginShortOrderSize { get; set; } = new(AmountType.Max, 0);
 
     /// <summary>
     /// First index of CandleData that should be evaluated

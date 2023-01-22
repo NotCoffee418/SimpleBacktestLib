@@ -127,14 +127,14 @@ public class BacktestBuilder
     /// </summary>
     /// <param name="type">Define the meaning of the amount</param>
     /// <param name="amount">Amount or value</param>
+    /// <param name="allowPartial">When false, an exception is thrown instead</param>
     /// <returns></returns>
-    public BacktestBuilder WithDefaultQuoteOrderSize(AmountType type, decimal amount)
+    public BacktestBuilder WithDefaultSpotBuyOrderSize(AmountType type, decimal amount, bool allowPartial = true)
     {
-        BacktestSetup.DefaultQuoteAmountType = type;
-        BacktestSetup.DefaultQuoteAmountRequest = amount;
+        BacktestSetup.DefaultSpotBuyOrderSize = new TradeInput(type, amount, allowPartial);
         return this;
     }
-    
+
     /// <summary>
     /// Specify the default order size when trading the base asset.
     /// By default, it will use the full available balance (Max).
@@ -142,13 +142,46 @@ public class BacktestBuilder
     /// </summary>
     /// <param name="type">Define the meaning of the amount</param>
     /// <param name="amount">Amount or value</param>
+    /// <param name="allowPartial">When false, an exception is thrown instead</param>
     /// <returns></returns>
-    public BacktestBuilder WithDefaultBaseOrderSize(AmountType type, decimal amount)
+    public BacktestBuilder WithDefaultSpotSellOrderSize(AmountType type, decimal amount, bool allowPartial = true)
     {
-        BacktestSetup.DefaultBaseAmountType = type;
-        BacktestSetup.DefaultBaseAmountRequest = amount;
+        BacktestSetup.DefaultSpotSellOrderSize = new TradeInput(type, amount, allowPartial);
         return this;
     }
+
+    /// <summary>
+    /// Specify the default quote input size for margin trading.
+    /// Percentage values are relative to the combined collateral of the base and quote balance.
+    /// Absolute values specify the amount to borrow and exchange into the other asset.
+    /// Max will utilize the full base and quote balances as collateral.
+    /// </summary>
+    /// <param name="type">Define the meaning of the amount</param>
+    /// <param name="amount">Amount or value</param>
+    /// <param name="allowPartial">When false, an exception is thrown instead</param>
+    /// <returns></returns>
+    public BacktestBuilder WithDefaultMarginLongOrderSize(AmountType type, decimal amount, bool allowPartial = true)
+    {
+        BacktestSetup.DefaultMarginLongOrderSize = new TradeInput(type, amount, allowPartial);
+        return this;
+    }
+
+    /// <summary>
+    /// Specify the default quote input size for margin trading.
+    /// Percentage values are relative to the combined collateral of the base and quote balance.
+    /// Absolute values specify the amount to borrow and exchange into the other asset.
+    /// Max will utilize the full base and quote balances as collateral.
+    /// </summary>
+    /// <param name="type">Define the meaning of the amount</param>
+    /// <param name="amount">Amount or value</param>
+    /// <param name="allowPartial">When false, an exception is thrown instead</param>
+    /// <returns></returns>
+    public BacktestBuilder WithDefaultMarginShortOrderSize(AmountType type, decimal amount, bool allowPartial = true)
+    {
+        BacktestSetup.DefaultMarginShortOrderSize = new TradeInput(type, amount, allowPartial);
+        return this;
+    }
+
 
     /// <summary>
     /// Define the quote trading balance.

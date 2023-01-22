@@ -37,35 +37,5 @@ internal static class ValueAssessment
     /// <returns></returns>
     internal static decimal CalcQuote(decimal baseAmount, decimal quotePrice)
         => baseAmount * quotePrice;
-
-    /// <summary>
-    /// Calculate the input amount from user settings.
-    /// </summary>
-    /// <param name="type"></param>
-    /// <param name="amountRequested"></param>
-    /// <param name="availableBalance"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentException"></exception>
-    /// <exception cref="NotImplementedException"></exception>
-    internal static (bool IsFullRequestedAmount, decimal TrueAmount) GetSpendAmount(AmountType type, decimal amountRequested, decimal availableBalance)
-    {
-        switch (type)
-        {
-            case AmountType.Max:
-                return (true, availableBalance);
-                
-            case AmountType.Fixed:
-                bool isFullRequestedAmount = amountRequested <= availableBalance;
-                return (isFullRequestedAmount, isFullRequestedAmount ? amountRequested : availableBalance);
-                
-            case AmountType.Percentage:
-                decimal ratio = amountRequested / 100;
-                if (ratio > 1 || ratio < 0)
-                    throw new ArgumentException("Percentage must be between 0 and 100.");
-                return (true, availableBalance * ratio); ;
-                
-            default:
-                throw new NotImplementedException($"AmountType {type.ToString()} not implemented.");
-        }
-    }
+    
 }
