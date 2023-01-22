@@ -32,19 +32,19 @@ public record TradeInput
     /// <summary>
     /// Defines what the Amount means.
     /// </summary>
-    public AmountType Type { get; private init; }
+    public AmountType Type { get; }
 
     /// <summary>
     /// Meaning of this amount depends on the type.
     /// This is not the literal value.
     /// </summary>
-    public decimal Amount { get; private init; }
+    public decimal Amount { get; }
 
     /// <summary>
     /// True: Throws an exception if the amount is more than we have.
     /// False: Use the balance we do have instead.
     /// </summary>
-    public bool AllowPartial { get; private init; }
+    public bool AllowPartial { get; }
 
 
     /// <summary>

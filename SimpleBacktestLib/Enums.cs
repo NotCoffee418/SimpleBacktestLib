@@ -1,8 +1,10 @@
 ﻿namespace SimpleBacktestLib;
 
+/// <summary>
+/// Defines the asset type of a trade.
+/// </summary>
 public enum TradeType
 {
-    NoAction = 0,
     SpotBuy = 1,
     SpotSell = 2,
     MarginLong = 3,
@@ -10,6 +12,18 @@ public enum TradeType
     MarginCloseLong = 5,
     MarginCloseShort = 6,
 }
+
+/// <summary>
+/// Simple definition of a trade operation.
+/// For more specific options see TradeType
+/// </summary>
+public enum TradeOperation
+{
+    UnspecifiedOrNotApplicable = 0,
+    Buy = 1,
+    Sell = 2,
+}
+
 
 public enum AssetType
 {
@@ -70,4 +84,16 @@ public enum AmountType
     Max = 0, // Trades the entire available balance. Amount is ignored.
     Absolute = 1, // Specify a fixed amount to trade
     Percentage, // Specify a percentage of the remaining available balance to trade 
+}
+
+/// <summary>
+/// Source from which to take the trading fee.
+/// </summary>
+public enum FeeSource
+{
+    Base = 0,
+    Quote = 1,
+    Input = 2,
+    Output = 3,
+    Both = 4,
 }
