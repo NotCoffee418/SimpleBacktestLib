@@ -54,7 +54,7 @@ public class BacktestBuilder
     /// </summary>
     /// <param name="tickFunction"></param>
     /// <returns></returns>
-    public BacktestBuilder OnTick(Action<TickData> onTickFunction)
+    public BacktestBuilder OnTick(Action<BacktestState> onTickFunction)
     {
         BacktestSetup.OnTickFunctions.Add(onTickFunction);
         return this;
@@ -66,7 +66,7 @@ public class BacktestBuilder
     /// </summary>
     /// <param name="postTickFunction"></param>
     /// <returns></returns>
-    public BacktestBuilder PostTick(Action<(TickData TickData, IEnumerable<TradeRequest> ExecutedTrades)> postTickFunction)
+    public BacktestBuilder PostTick(Action<BacktestState> postTickFunction)
     {
         BacktestSetup.PostTickFunctions.Add(postTickFunction);
         return this;
@@ -199,6 +199,27 @@ public class BacktestBuilder
     public BacktestBuilder WithDefaultMarginShortOrderSize(AmountType type, decimal amount, bool allowPartial = true)
     {
         BacktestSetup.DefaultMarginShortOrderSize = new TradeInput(type, amount, allowPartial);
+        return this;
+    }
+    
+    /// <summary>
+    /// Sets the margin leverage ratio for the backtest. Default is 5.
+    /// </summary>
+    /// <param name="ratio"></param>
+    /// <returns></returns>
+    public BacktestBuilder WithMarginLeverageRatio(decimal ratio)
+    {
+        BacktestSetup.MarginLeverageRatio = ratio;
+        return this;
+    }
+
+    /// <summary>
+    /// Ratio below which the margin position will liquidate. Default is 0.1.
+    /// </summary>
+    /// <returns></returns>
+    public BacktestBuilder WithMarginLiquidationRatio(decimal liquidationRatio)
+    {
+        BacktestSetup.MarginLiquidationRatio = liquidationRatio;
         return this;
     }
 

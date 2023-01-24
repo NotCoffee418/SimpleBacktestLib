@@ -47,10 +47,9 @@ public record MarginPosition
     /// Shortcut function for GeneratePosition witout specifying the amount.
     /// Instead, values from setup definition can be passed in to get the approperiate amount.
     /// </summary>
-    /// <param name="marginAmountType"></param>
-    /// <param name="marginAmountRequested">Not literal! Meaning depends on marginAmountType.</param>
     /// <param name="direction"></param>
     /// <param name="openPrice"></param>
+    /// <param name="tradeInput">The amount to borrow. Max: balance * leverageRatio</param>
     /// <param name="baseCollateral"></param>
     /// <param name="quoteCollateral"></param>
     /// <param name="leverageRatio"></param>

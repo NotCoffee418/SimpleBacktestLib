@@ -9,7 +9,14 @@ namespace SimpleBacktestLib.Internal.Models;
 /// </summary>
 internal class SetupDefinitions
 {
+    /// <summary>
+    /// Available quote budget. Modified internally through trades
+    /// </summary>
     internal decimal QuoteBudget { get; set; } = 10000;
+
+    /// <summary>
+    /// Available base budget. Modified internally through trades.
+    /// </summary>
     internal decimal BaseBudget { get; set; } = 0;
 
     /// <summary>
@@ -49,7 +56,7 @@ internal class SetupDefinitions
     /// <summary>
     /// Tick functions that should be called, in order.
     /// </summary>
-    internal List<Action<TickData>> OnTickFunctions { get; } = new();
+    internal List<Action<BacktestState>> OnTickFunctions { get; } = new();
 
     /// <summary>
     /// Function that triggers when a log entry is made.
@@ -59,10 +66,20 @@ internal class SetupDefinitions
     /// <summary>
     /// Post-tick functions that should be called, in order.
     /// </summary>
-    internal List<Action<(TickData TickData, IEnumerable<TradeRequest> ExecutedTrades)>> PostTickFunctions { get; } = new();
+    internal List<Action<BacktestState>> PostTickFunctions { get; } = new();
 
     /// <summary>
     /// Specifies the price to use on each candle.
     /// </summary>
     internal PriceTime CandlePriceTime { get; set; } = PriceTime.AtOpen;
+    
+    /// <summary>
+    /// Leverage for margin loans.
+    /// </summary>
+    internal decimal MarginLeverageRatio { get; set; } = 5;
+
+    /// <summary>
+    /// Ratio below which the margin position will liquidate
+    /// </summary>
+    internal decimal MarginLiquidationRatio { get; set; } = 0.1m;
 }

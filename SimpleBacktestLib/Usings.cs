@@ -9,6 +9,7 @@ global using System.Collections.Immutable;
 global using SimpleBacktestLib.Internal.Models;
 global using SimpleBacktestLib.Models;
 global using SimpleBacktestLib.TradingManagers;
+global using SimpleBacktestLib.Internal.Helpers;
 
 
 // Imported

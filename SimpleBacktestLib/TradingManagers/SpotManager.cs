@@ -14,7 +14,7 @@ public class SpotManager
     /// <summary>
     /// Reference to the instance state for reading and modifying.
     /// </summary>
-    public BacktestState State { get; }
+    private BacktestState State { get; }
 
     /// <summary>
     /// Buy an amount as specified by the settings.

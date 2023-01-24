@@ -1,4 +1,6 @@
-﻿namespace SimpleBacktestLib;
+﻿using SimpleBacktestLib.Internal.Helpers;
+
+namespace SimpleBacktestLib;
 
 /// <summary>
 /// State at a given point in the backtest. Modified by the <see cref="Engine"/> class.
@@ -7,7 +9,7 @@ public class BacktestState
 {
     public BacktestState()
     {
-        TradeManagerInstance = new(this);
+        Trade = new(this);
     }
     
     /// <summary>
@@ -22,11 +24,23 @@ public class BacktestState
 
 
     /// <summary>
+    /// Index of the currently evaluated candle in CandleData
+    /// Updated by the Engine class.
+    /// </summary>
+    public int CurrentCandleIndex { get; internal set; } = -1;
+
+    /// <summary>
+    /// Internal reference of instance of the trade manager, to be passed by engine to TickData as "Trade".
+    /// Instantiated by constructor.
+    /// </summary>
+    public CommonTradeManager Trade { get; }
+
+    /// <summary>
     /// Get all margin trades opened during the backtest so far.
     /// </summary>
     /// <returns></returns>
-    public List<MarginPosition> GetAllMarginTrades()
-        => MarginTrades.ToList(); // Cloned version
+    public Dictionary<uint, MarginPosition> GetAllMarginTrades()
+        => MarginTrades.ToDictionary(x => x.Key, x => x.Value); // Cloned version
 
     /// <summary>
     /// Get all spot trades executed during the backtest so far.
@@ -44,15 +58,35 @@ public class BacktestState
         => LogEntries.ToList(); // Cloned Version
 
     /// <summary>
+    /// Get the price of the current candle as defined by the settings.
+    /// </summary>
+    /// <returns></returns>
+    public decimal GetCurrentCandlePrice()
+        => GetCurrentCandle().GetPrice(SetupConfig.CandlePriceTime);
+
+
+    /// <summary>
+    /// Add a log entry and trigger OnLogEntry.
+    /// </summary>
+    /// <param name="message"></param>
+    /// <param name="level"></param>
+    public void AddLogEntry(string message, LogLevel level = LogLevel.Information)
+        => LogHandler.AddLogEntry(this, message, CurrentCandleIndex, level);
+
+    public BacktestCandle GetCurrentCandle()
+        => SetupConfig.CandleData[CurrentCandleIndex];
+    /// <summary>
+    /// Get all backtest candles input to the backtest.
+    /// </summary>
+    /// <returns></returns>
+    public ImmutableList<BacktestCandle> GetAllBacktestCandles()
+        => SetupConfig.CandleData;
+
+    /// <summary>
     /// Internal-only properties of the backtest state.
     /// </summary>
     internal SetupDefinitions SetupConfig { get; } = new();
 
-    /// <summary>
-    /// Internal reference of instance of the trade manager, to be passed by engine to TickData as "Trade".
-    /// Instantiated by constructor.
-    /// </summary>
-    internal CommonTradeManager TradeManagerInstance { get; }
 
     /// <summary>
     /// History of spot trades so far
@@ -60,9 +94,14 @@ public class BacktestState
     internal List<BacktestTrade> SpotTrades { get; } = new();
 
     /// <summary>
+    /// Used to generate unique IDs for margin trades.
+    /// </summary>
+    internal uint NextMarginId { get; set; } = 1;
+    
+    /// <summary>
     /// History of margin trades so far and open positions
     /// </summary>
-    internal List<MarginPosition> MarginTrades { get; } = new();
+    internal Dictionary<uint, MarginPosition> MarginTrades { get; } = new();
 
     /// <summary>
     /// In-progress log. Should be modified through LogHandler and it's shortcuts only.
