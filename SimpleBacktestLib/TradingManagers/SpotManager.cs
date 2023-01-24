@@ -1,6 +1,4 @@
-﻿using SimpleBacktestLib.Models;
-
-namespace SimpleBacktestLib.TradingManagers;
+﻿namespace SimpleBacktestLib.TradingManagers;
 
 public class SpotManager
 {
@@ -21,36 +19,55 @@ public class SpotManager
     /// <summary>
     /// Buy an amount as specified by the settings.
     /// </summary>
-    public void Buy()
-    {
-        // Extract trade amount
-    }
+    /// <returns>Trade successfully executed?</returns>
+    public bool Buy()
+        => Buy(State.SetupConfig.DefaultSpotBuyOrderSize);
 
     /// <summary>
     /// Buy a custom amount
     /// </summary>
     /// <param name="amountType">Defines the meaning of the amount parameter</param>
-    /// <param name="amount">Amount for the amountType parameter</param>
+    /// <param name="inputAmount">Amount for the amountType parameter</param>
     /// <param name="allowPartial">
     /// Throws an exception if the balance is insufficient for trade request if false.
     /// Otherwise, it uses whatever remaining balance there is.
     /// </param>
-    public void Buy(AmountType amountType, decimal inputAmount, bool allowPartial = true)
+    /// <returns>Trade successfully executed?</returns>
+    public bool Buy(AmountType amountType, decimal inputAmount, bool allowPartial = true)
         => Buy(new TradeInput(amountType, inputAmount, allowPartial));
 
     /// <summary>
     /// Buy a custom amount by directly specifying the TradeInput
     /// </summary>
-    /// <param name="tradeInput"></param>
-    public void Buy(TradeInput tradeInput)
-    {
+    /// <param name="tradeInput">See documentation or use other parameters</param>
+    /// <returns>Trade successfully executed?</returns>
+    public bool Buy(TradeInput tradeInput)
+        => SpotLogic.ExecuteBuy(State, tradeInput);
 
-    }
-
-
-
-    public void Sell()
-    {
-        throw new NotImplementedException();
-    }
+    /// <summary>
+    /// Sell an amount as specified by the settings.
+    /// </summary>
+    /// <returns>Trade successfully executed?</returns>
+    public bool Sell()
+        => Buy(State.SetupConfig.DefaultSpotSellOrderSize);
+    
+    /// <summary>
+    /// Sell a custom amount
+    /// </summary>
+    /// <param name="amountType">Defines the meaning of the amount parameter</param>
+    /// <param name="inputAmount">Amount for the amountType parameter<</param>
+    /// <param name="allowPartial">
+    /// Throws an exception if the balance is insufficient for trade request if false.
+    /// Otherwise, it uses whatever remaining balance there is.</param>
+    /// <returns>Trade successfully executed?</returns>
+    public bool Sell(AmountType amountType, decimal inputAmount, bool allowPartial = true)
+        => Sell(new TradeInput(amountType, inputAmount, allowPartial));
+    
+    /// <summary>
+    /// Sell a custom amount by directly specifying the TradeInput
+    /// </summary>
+    /// <param name="tradeInput">See documentation or use other parameters</param>
+    /// <returns>Trade successfully executed?</returns>
+    public bool Sell(TradeInput tradeInput)
+        => SpotLogic.ExecuteSell(State, tradeInput);
 }

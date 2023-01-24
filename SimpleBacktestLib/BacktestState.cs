@@ -21,22 +21,27 @@ public class BacktestState
     public decimal QuoteBalance { get; internal set; }
 
 
-
     /// <summary>
     /// Get all margin trades opened during the backtest so far.
     /// </summary>
     /// <returns></returns>
     public List<MarginPosition> GetAllMarginTrades()
-        => PendingResult.MarginTrades.ToList(); // Cloned version
+        => MarginTrades.ToList(); // Cloned version
 
     /// <summary>
     /// Get all spot trades executed during the backtest so far.
     /// </summary>
     /// <returns></returns>
     public List<BacktestTrade> GetAllSpotTrades()
-        => PendingResult.SpotTrades.ToList(); // Cloned version
+        => SpotTrades.ToList(); // Cloned version
 
-    
+    /// <summary>
+    /// Get the full log at the current point in the backtest.
+    /// The preferred way to get logs in progress is through BacktestBuilder.OnLogEntry().
+    /// </summary>
+    /// <returns></returns>
+    public List<LogEntry> GetFullLog()
+        => LogEntries.ToList(); // Cloned Version
 
     /// <summary>
     /// Internal-only properties of the backtest state.
@@ -50,8 +55,17 @@ public class BacktestState
     internal CommonTradeManager TradeManagerInstance { get; }
 
     /// <summary>
-    /// Incomplete backtest result. Should not be revealed to the user until completion aince information is missing.
+    /// History of spot trades so far
     /// </summary>
-    internal BacktestResult PendingResult { get; } = new();
+    internal List<BacktestTrade> SpotTrades { get; } = new();
 
+    /// <summary>
+    /// History of margin trades so far and open positions
+    /// </summary>
+    internal List<MarginPosition> MarginTrades { get; } = new();
+
+    /// <summary>
+    /// In-progress log. Should be modified through LogHandler and it's shortcuts only.
+    /// </summary>
+    internal List<LogEntry> LogEntries { get; } = new();
 }

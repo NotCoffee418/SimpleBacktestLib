@@ -50,6 +50,11 @@ internal class SetupDefinitions
     /// Tick functions that should be called, in order.
     /// </summary>
     internal List<Action<TickData>> OnTickFunctions { get; } = new();
+
+    /// <summary>
+    /// Function that triggers when a log entry is made.
+    /// </summary>
+    internal List<Action<LogEntry, BacktestState>> OnLogEntryFunctions { get; } = new();
     
     /// <summary>
     /// Post-tick functions that should be called, in order.

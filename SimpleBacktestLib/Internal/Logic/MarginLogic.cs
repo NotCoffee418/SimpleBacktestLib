@@ -1,5 +1,8 @@
 ﻿namespace SimpleBacktestLib.Internal.Logic;
 
+/// <summary>
+/// This class is allowed to modify state.
+/// </summary>
 internal static class MarginLogic
 {
 

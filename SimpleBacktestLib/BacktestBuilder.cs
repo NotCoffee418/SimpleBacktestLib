@@ -59,6 +59,32 @@ public class BacktestBuilder
         BacktestSetup.OnTickFunctions.Add(onTickFunction);
         return this;
     }
+    
+    /// <summary>
+    /// Optional functions that runs after a tick is completed, before the next tick.
+    /// Can be used for cleanup or other operations.
+    /// </summary>
+    /// <param name="postTickFunction"></param>
+    /// <returns></returns>
+    public BacktestBuilder PostTick(Action<(TickData TickData, IEnumerable<TradeRequest> ExecutedTrades)> postTickFunction)
+    {
+        BacktestSetup.PostTickFunctions.Add(postTickFunction);
+        return this;
+    }
+
+
+    /// <summary>
+    /// Optional function that fires whenever a log entry is made by the user application or the library.
+    /// Useful for reporting in real-time or handling exceptions.
+    /// </summary>
+    /// <param name="onLogEntryFunction"></param>
+    /// <returns></returns>
+    public BacktestBuilder OnLogEntry(Action<LogEntry, BacktestState> onLogEntryFunction)
+    {
+        BacktestSetup.OnLogEntryFunctions.Add(onLogEntryFunction);
+        return this;
+    }
+
 
     /// <summary>
     /// Specify a time range on which to run the backtest.
@@ -101,19 +127,7 @@ public class BacktestBuilder
             throw new ArgumentException("endTimeStr could not be parsed.");
         return this.EvaluateBetween(start, end);
     }
-
-    /// <summary>
-    /// Read-only access to the tick data and any trade requests that were executed this tick.
-    /// This is primarily intended for progress reporting, logging and evaluation.
-    /// </summary>
-    /// <param name="postTickFunction"></param>
-    /// <returns></returns>
-    public BacktestBuilder PostTick(Action<(TickData TickData, IEnumerable<TradeRequest> ExecutedTrades)> postTickFunction)
-    {
-        BacktestSetup.PostTickFunctions.Add(postTickFunction);
-        return this;
-    }
-
+    
     /// <summary>
     /// Specify which price to use for evaluating trades and executing them.
     /// Defaults to candle open price.

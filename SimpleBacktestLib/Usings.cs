@@ -10,5 +10,9 @@ global using SimpleBacktestLib.Internal.Models;
 global using SimpleBacktestLib.Models;
 global using SimpleBacktestLib.TradingManagers;
 
+
+// Imported
+global using Microsoft.Extensions.Logging;
+
 // Allow tests on internal functions
 [assembly: InternalsVisibleToAttribute("SimpleBacktestLib.Tests")]

@@ -1,4 +1,5 @@
-﻿using SimpleBacktestLib.TradingManagers;
+﻿using SimpleBacktestLib.Internal.Helpers;
+using SimpleBacktestLib.TradingManagers;
 
 namespace SimpleBacktestLib;
 
@@ -31,4 +32,12 @@ public record TickData
     /// Execute simulated trades for your backtest
     /// </summary>
     public CommonTradeManager Trade { get => State.TradeManagerInstance; }
+
+    /// <summary>
+    /// Add a log entry and trigger OnLogEntry.
+    /// </summary>
+    /// <param name="message"></param>
+    /// <param name="level"></param>
+    public void AddLogEntry(string message, LogLevel level = LogLevel.Information)
+        => LogHandler.AddLogEntry(State, message, CurrentCandleIndex, level);
 }
