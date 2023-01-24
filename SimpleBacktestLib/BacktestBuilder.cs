@@ -1,24 +1,30 @@
-﻿using System.Globalization;
-
-namespace SimpleBacktestLib;
+﻿namespace SimpleBacktestLib;
 
 /// <summary>
 /// Primary access point to the SimpleBacktestLib's core functions.
 /// </summary>
 public class BacktestBuilder
 {
+    /// <summary>
+    /// Should be instantiated through CreateBuilder() only
+    /// </summary>
+    private BacktestBuilder() { }
+
+    /// <summary>
+    /// Stores the backtest setup definitions.
+    /// </summary>
     private SetupDefinitions BacktestSetup { get; } = new();
 
     /// <summary>
-    /// Create a backtest builder with default settings
+    /// Create a backtest builder with the provided candle data and default settings.
     /// </summary>
     /// <returns></returns>
-    public static BacktestBuilder CreateBuilder() => new();
-
-    public BacktestBuilder WithCandleData(IEnumerable<BacktestCandle> candleData)
+    public static BacktestBuilder CreateBuilder(IEnumerable<BacktestCandle> candleData)
     {
+        BacktestBuilder btb = new();
+        
         // Validate dataset
-        if (BacktestSetup.CandleData is not null)
+        if (btb.BacktestSetup.CandleData is not null)
             throw new ArgumentException("Candle data has already been set.");
         if (candleData is null || candleData.Count() == 0)
             throw new ArgumentException("Input candle data is null or empty.");
@@ -34,12 +40,12 @@ public class BacktestBuilder
             }
 
         // Set data
-        BacktestSetup.CandleData = candleData.ToImmutableList();
+        btb.BacktestSetup.CandleData = candleData.ToImmutableList();
 
         // Set default evaluate time at the last month of data.
         DateTime endEvaluateTime = candleData.Last().Time;
         DateTime startEvaluateTime = endEvaluateTime.AddDays(-30);
-        return this.EvaluateBetween(startEvaluateTime, endEvaluateTime);
+        return btb.EvaluateBetween(startEvaluateTime, endEvaluateTime);
     }
 
     /// <summary>
@@ -48,7 +54,7 @@ public class BacktestBuilder
     /// </summary>
     /// <param name="tickFunction"></param>
     /// <returns></returns>
-    public BacktestBuilder OnTick(Func<TickData, IEnumerable<TradeRequest>?> onTickFunction)
+    public BacktestBuilder OnTick(Action<TickData> onTickFunction)
     {
         BacktestSetup.OnTickFunctions.Add(onTickFunction);
         return this;

@@ -1,4 +1,4 @@
-﻿namespace SimpleBacktestLib.Internal.Models;
+﻿namespace SimpleBacktestLib.Models;
 
 /// <summary>
 /// Input values for a trade
@@ -9,23 +9,23 @@ public record TradeInput
     /// Create a TradeInput definition to be used for manual trade requests.
     /// </summary>
     /// <param name="amountType">Defines the meaning of the amount parameter</param>
-    /// <param name="amount">Amount for the amountType parameter</param>
+    /// <param name="inputAmount">Amount for the amountType parameter</param>
     /// <param name="allowPartial">
     /// Throws an exception if the balance is insufficient for trade request if false.
     /// Otherwise, it uses whatever remaining balance there is.
     /// </param>
     /// <exception cref="ArgumentException">Throws if amountType/amount combination is invalid</exception>
-    public TradeInput(AmountType amountType, decimal amount, bool allowPartial = true)
+    public TradeInput(AmountType amountType, decimal inputAmount, bool allowPartial = true)
     {
         // Validate
-        if (amountType == AmountType.Percentage && (amount <= 0 || amount > 100))
+        if (amountType == AmountType.Percentage && (inputAmount <= 0 || inputAmount > 100))
             throw new ArgumentException("Percent amounts must be between 0 and 100.");
-        else if (amountType == AmountType.Absolute && amount <= 0)
+        else if (amountType == AmountType.Absolute && inputAmount <= 0)
             throw new ArgumentException("Absolute amounts must be greater than 0.");
 
         // Assign
         Type = amountType;
-        Amount = amount;
+        Amount = inputAmount;
         AllowPartial = allowPartial;
     }
 
@@ -67,7 +67,7 @@ public record TradeInput
             case AmountType.Absolute:
                 literalAmount = Amount;
                 break;
-                
+
             case AmountType.Percentage:
                 literalAmount = availableBalance * (Amount / 100);
                 break;
@@ -83,7 +83,7 @@ public record TradeInput
             if (AllowPartial) literalAmount = availableBalance;
             else throw new ArgumentException("Requested amount is more than available balance.");
         }
-        
+
         // Output
         return (literalAmount, isFullAmount);
     }

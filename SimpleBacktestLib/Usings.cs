@@ -7,7 +7,8 @@ global using SimpleBacktestLib.Internal.Logic;
 global using System.Runtime.CompilerServices;
 global using System.Collections.Immutable;
 global using SimpleBacktestLib.Internal.Models;
-global using SimpleBacktestLib.TradeRequestTypes;
+global using SimpleBacktestLib.Models;
+global using SimpleBacktestLib.TradingManagers;
 
 // Allow tests on internal functions
 [assembly: InternalsVisibleToAttribute("SimpleBacktestLib.Tests")]

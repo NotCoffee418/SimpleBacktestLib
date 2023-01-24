@@ -1,4 +1,4 @@
-﻿namespace SimpleBacktestLib.Internal.Margin;
+﻿namespace SimpleBacktestLib.Models;
 
 /// <summary>
 /// Describes an active margin position. Should be defined by the <see cref="Engine"/> class.
@@ -36,7 +36,7 @@ public record MarginPosition
     /// When the combined liquidity drops below this ratio, the margin position closes at a loss.
     /// </summary>
     public decimal LiquidationRatio { get; private init; }
-    
+
     /// <summary>
     /// Is the position closed?
     /// </summary>

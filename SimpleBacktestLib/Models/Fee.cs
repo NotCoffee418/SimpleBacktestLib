@@ -1,4 +1,4 @@
-﻿namespace SimpleBacktestLib.Internal.Models;
+﻿namespace SimpleBacktestLib.Models;
 
 public record Fee
 {
@@ -73,7 +73,7 @@ public record Fee
         // Return result
         return (baseFee, quoteFee);
     }
-    
+
     /// <summary>
     /// Change the fee source if it's a contextual value
     /// </summary>

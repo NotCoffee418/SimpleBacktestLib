@@ -1,5 +1,10 @@
-﻿namespace SimpleBacktestLib;
+﻿using SimpleBacktestLib.TradingManagers;
 
+namespace SimpleBacktestLib;
+
+/// <summary>
+/// Data passed down to the Tick() function for understanding and manipulating the current state of the backtest.
+/// </summary>
 public record TickData
 {
     /// <summary>
@@ -18,7 +23,12 @@ public record TickData
     public ImmutableList<BacktestCandle> HistoricData { get; init; }
 
     /// <summary>
-    /// Current state of the backtest
+    /// Access the current state of the backtest.
     /// </summary>
     public BacktestState State { get; init; }
+
+    /// <summary>
+    /// Execute simulated trades for your backtest
+    /// </summary>
+    public CommonTradeManager Trade { get => State.TradeManagerInstance; }
 }

@@ -1,4 +1,4 @@
-﻿namespace SimpleBacktestLib.Internal.Margin;
+﻿namespace SimpleBacktestLib.Internal.Logic;
 
 internal static class MarginLogic
 {
@@ -50,7 +50,7 @@ internal static class MarginLogic
         return (isLiquid, unrealizedBase, unrealizedQuote);
     }
 
-    
+
     /// <summary>
     /// Determine the asset type we need to, or have borrowed depending on the direction of our margin trade.
     /// </summary>

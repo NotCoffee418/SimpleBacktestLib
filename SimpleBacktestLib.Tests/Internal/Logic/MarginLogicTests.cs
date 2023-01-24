@@ -1,7 +1,8 @@
 ﻿using SimpleBacktestLib.Internal.Models;
+using SimpleBacktestLib.Models;
 using System.ComponentModel;
 
-namespace SimpleBacktestLib.Tests.Internal.Margin;
+namespace SimpleBacktestLib.Tests.Internal.Logic;
 
 public class MarginLogicTests
 {
@@ -21,8 +22,8 @@ public class MarginLogicTests
     public void CalculateUnrealizedBalances_LongScenarios(
         decimal baseCollateral,
         decimal quoteCollateral,
-        decimal tickPrice, 
-        decimal leverageRatio, 
+        decimal tickPrice,
+        decimal leverageRatio,
         decimal expectedCombinedQuote)
     {
         MarginPosition longPos =
@@ -34,9 +35,9 @@ public class MarginLogicTests
             quoteCollateral,
             leverageRatio,
             0.1m);
-        
+
         // Calculate
-        (bool isLiquid, decimal updatedBase, decimal updatedQuote) 
+        (bool isLiquid, decimal updatedBase, decimal updatedQuote)
             = MarginLogic.CalculateUnrealizedBalances(longPos, tickPrice, baseCollateral, quoteCollateral);
         decimal actualCombinedQuote = ValueAssessment.GetCombinedValue(AssetType.Quote, updatedBase, updatedQuote, tickPrice);
         decimal roundedActualCombinedQuote = Math.Round(actualCombinedQuote, 4);

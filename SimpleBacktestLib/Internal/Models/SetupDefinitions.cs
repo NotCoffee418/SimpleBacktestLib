@@ -1,4 +1,7 @@
-﻿namespace SimpleBacktestLib.Internal.Models;
+﻿using SimpleBacktestLib.Models;
+using SimpleBacktestLib.TradingManagers;
+
+namespace SimpleBacktestLib.Internal.Models;
 
 /// <summary>
 /// Internal-only setup properties.
@@ -46,7 +49,7 @@ internal class SetupDefinitions
     /// <summary>
     /// Tick functions that should be called, in order.
     /// </summary>
-    internal List<Func<TickData, IEnumerable<TradeRequest>?>> OnTickFunctions { get; } = new();
+    internal List<Action<TickData>> OnTickFunctions { get; } = new();
     
     /// <summary>
     /// Post-tick functions that should be called, in order.
