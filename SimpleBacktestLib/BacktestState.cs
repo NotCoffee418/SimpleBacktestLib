@@ -1,6 +1,4 @@
-﻿using SimpleBacktestLib.Internal.Helpers;
-
-namespace SimpleBacktestLib;
+﻿namespace SimpleBacktestLib;
 
 /// <summary>
 /// State at a given point in the backtest. Modified by the <see cref="Engine"/> class.

@@ -4,7 +4,7 @@
 /// <summary>
 /// This class is allowed to modify state.
 /// </summary>
-internal static class SpotLogic
+internal static class SpotAccess
 {
     /// <summary>
     /// High level internal function to execute a spot buy
@@ -36,6 +36,13 @@ internal static class SpotLogic
         // Trade successful
         state.BaseBalance += baseGained;
         state.QuoteBalance -= quoteRemoved;
+        state.SpotTrades.Add(new(
+            TradeOperation.Buy,
+            currentPrice,
+            baseGained,
+            quoteRemoved,
+            state.CurrentCandleIndex,
+            state.GetCurrentCandle().Time));
 
         // Log it
         LogHandler.AddLogEntry(state, $"Bought {baseGained} Base Asset for {quoteRemoved} Quote Asset at price {currentPrice}", state.CurrentCandleIndex, LogLevel.Information);
@@ -73,6 +80,13 @@ internal static class SpotLogic
         // Trade successful
         state.BaseBalance -= baseRemoved;
         state.QuoteBalance += quoteGained;
+        state.SpotTrades.Add(new(
+            TradeOperation.Sell,
+            currentPrice,
+            baseRemoved,
+            quoteGained,
+            state.CurrentCandleIndex,
+            state.GetCurrentCandle().Time));
 
         // Log it
         LogHandler.AddLogEntry(state, $"Sold {baseRemoved} Base Asset for {quoteGained} Quote Asset at price {currentPrice}", state.CurrentCandleIndex, LogLevel.Information);

@@ -52,9 +52,9 @@ internal static class TradeLogic
             TradeOperation.Sell,
             inputAmountAfterBaseFee,
             quotePrice,
-            0,
-            literalQuoteFees); // Already applied
+            0, // Already applied
+            literalQuoteFees); 
 
-        return (literalOutputAfterFees, literalInputBeforeFees, isFullValue);
+        return (literalInputBeforeFees, literalOutputAfterFees, isFullValue);
     }
 }

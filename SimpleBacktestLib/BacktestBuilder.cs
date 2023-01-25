@@ -1,4 +1,6 @@
-﻿namespace SimpleBacktestLib;
+﻿using SimpleBacktestLib.Internal.InternalModels;
+
+namespace SimpleBacktestLib;
 
 /// <summary>
 /// Primary access point to the SimpleBacktestLib's core functions.

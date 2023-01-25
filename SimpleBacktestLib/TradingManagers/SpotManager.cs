@@ -42,7 +42,7 @@ public class SpotManager
     /// <param name="tradeInput">See documentation or use other parameters</param>
     /// <returns>Trade successfully executed?</returns>
     public bool Buy(TradeInput tradeInput)
-        => SpotLogic.ExecuteBuy(State, tradeInput);
+        => SpotAccess.ExecuteBuy(State, tradeInput);
 
     /// <summary>
     /// Sell an amount as specified by the settings.
@@ -69,5 +69,5 @@ public class SpotManager
     /// <param name="tradeInput">See documentation or use other parameters</param>
     /// <returns>Trade successfully executed?</returns>
     public bool Sell(TradeInput tradeInput)
-        => SpotLogic.ExecuteSell(State, tradeInput);
+        => SpotAccess.ExecuteSell(State, tradeInput);
 }

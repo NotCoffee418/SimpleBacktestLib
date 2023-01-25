@@ -1,7 +1,7 @@
 ﻿using SimpleBacktestLib.Models;
 using SimpleBacktestLib.TradingManagers;
 
-namespace SimpleBacktestLib.Internal.Models;
+namespace SimpleBacktestLib.Internal.InternalModels;
 
 /// <summary>
 /// Internal-only setup properties.
@@ -41,8 +41,8 @@ internal class SetupDefinitions
     /// <summary>
     /// Fees applied to spot trades, in order.
     /// </summary>
-    internal List<Fee> SpotFees { get; set; } = new() { 
-        new(AmountType.Percentage, 0.1m, FeeSource.Base) 
+    internal List<Fee> SpotFees { get; set; } = new() {
+        new(AmountType.Percentage, 0.1m, FeeSource.Base)
     };
 
     /// <summary>
@@ -69,7 +69,7 @@ internal class SetupDefinitions
     /// Function that triggers when a log entry is made.
     /// </summary>
     internal List<Action<LogEntry, BacktestState>> OnLogEntryFunctions { get; } = new();
-    
+
     /// <summary>
     /// Post-tick functions that should be called, in order.
     /// </summary>
@@ -79,7 +79,7 @@ internal class SetupDefinitions
     /// Specifies the price to use on each candle.
     /// </summary>
     internal PriceTime CandlePriceTime { get; set; } = PriceTime.AtOpen;
-    
+
     /// <summary>
     /// Leverage for margin loans.
     /// </summary>

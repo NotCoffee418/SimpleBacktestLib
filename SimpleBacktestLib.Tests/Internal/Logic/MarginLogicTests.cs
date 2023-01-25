@@ -1,8 +1,4 @@
-﻿using SimpleBacktestLib.Internal.Models;
-using SimpleBacktestLib.Models;
-using System.ComponentModel;
-
-namespace SimpleBacktestLib.Tests.Internal.Logic;
+﻿namespace SimpleBacktestLib.Tests.Internal.Logic;
 
 public class MarginLogicTests
 {

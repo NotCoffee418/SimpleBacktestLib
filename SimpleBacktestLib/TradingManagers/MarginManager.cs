@@ -41,7 +41,7 @@ public class MarginManager
     /// <param name="tradeInput"></param>
     /// <returns>Margin position id needed to close the position.</returns>
     public uint Long(TradeInput tradeInput)
-        => MarginLogic.ExecuteOpenPosition(TradeType.MarginLong, State, tradeInput);
+        => MarginAccess.ExecuteOpenPosition(TradeType.MarginLong, State, tradeInput);
     
 
     /// <summary>
@@ -69,12 +69,12 @@ public class MarginManager
     /// <param name="tradeInput"></param>
     /// <returns>Margin position id needed to close the position.</returns>
     public uint Short(TradeInput tradeInput)
-        => MarginLogic.ExecuteOpenPosition(TradeType.MarginShort, State, tradeInput);
+        => MarginAccess.ExecuteOpenPosition(TradeType.MarginShort, State, tradeInput);
 
     /// <summary>
     /// Close an opened margin position
     /// </summary>
     /// <param name="positionId">Id can be found when creating the position or in State</param>
     public void ClosePosition(uint positionId)
-        => MarginLogic.ExecuteClosePosition(State, positionId);
+        => MarginAccess.ExecuteClosePosition(State, positionId);
 }

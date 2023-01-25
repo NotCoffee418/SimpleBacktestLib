@@ -1,4 +1,6 @@
-﻿namespace SimpleBacktestLib.Internal.Logic;
+﻿using SimpleBacktestLib.Internal.InternalModels;
+
+namespace SimpleBacktestLib.Internal.Logic;
 
 internal static class Engine
 {

@@ -2,11 +2,22 @@
 
 public record LogEntry
 {
+    /// <summary>
+    /// Log message without status or candle indicators
+    /// </summary>
     public string Message { get; private set; }
+    
+    /// <summary>
+    /// Index of the candle in the backtest data
+    /// </summary>
     public long CandleIndex { get; private set; }
-    public LogLevel Level { get; private set; }
 
-    public static LogEntry Create(string message, long candleIndex = -1, LogLevel level = LogLevel.Information)
+    /// <summary>
+    /// Loglevel of the entry
+    /// </summary>
+    public LogLevel Level { get; private set; }
+    
+    internal static LogEntry Create(string message, long candleIndex = -1, LogLevel level = LogLevel.Information)
         => new()
         {
             Message = message,
