@@ -67,5 +67,13 @@ internal static class ValueAssessment
     internal static decimal CalcQuote(decimal baseAmount, decimal quotePrice)
         => baseAmount * quotePrice;
 
+    /// <summary>
+    /// Get the profit ratio of a trade.
+    /// </summary>
+    /// <param name="initialValue"></param>
+    /// <param name="finalValue"></param>
+    /// <returns></returns>
+    internal static decimal GetProfitRatio(decimal initialValue, decimal finalValue)
+        => (finalValue - initialValue) / initialValue;
 
 }

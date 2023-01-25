@@ -9,11 +9,11 @@ internal static class MarginAccess
     /// <param name="state"></param>
     /// <param name="tradeInput"></param>
     /// <returns>Id of the created margin position</returns>
-    internal static uint ExecuteOpenPosition(TradeType marginType, BacktestState state, TradeInput tradeInput)
+    internal static int ExecuteOpenPosition(TradeType marginType, BacktestState state, TradeInput tradeInput)
     {
         // Generate the short
         decimal candlePrice = state.GetCurrentCandlePrice();
-        uint selectedMarginId = state.NextMarginId;
+        int selectedMarginId = state.NextMarginId;
         MarginPosition pos = MarginPosition.GeneratePosition(
             marginType,
             candlePrice,
@@ -40,7 +40,7 @@ internal static class MarginAccess
     /// </summary>
     /// <param name="state"></param>
     /// <param name="positionId"></param>
-    internal static void ExecuteClosePosition(BacktestState state, uint positionId)
+    internal static void ExecuteClosePosition(BacktestState state, int positionId)
     {
         // Get position value
         (bool isLiquid, decimal newBase, decimal newQuote) = MarginLogic.CalculateUnrealizedBalances(

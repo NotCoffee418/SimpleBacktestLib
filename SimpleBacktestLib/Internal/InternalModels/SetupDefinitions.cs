@@ -10,14 +10,16 @@ namespace SimpleBacktestLib.Internal.InternalModels;
 internal class SetupDefinitions
 {
     /// <summary>
-    /// Available quote budget. Modified internally through trades
+    /// Available base budget. 
+    /// This does not track any changes and should only be set in BacktestBuilder.
     /// </summary>
-    internal decimal QuoteBudget { get; set; } = 10000;
+    internal decimal StartingBaseBalance { get; set; } = 0;
 
     /// <summary>
-    /// Available base budget. Modified internally through trades.
+    /// Available quote budget.
+    /// This does not track any changes and should only be set in BacktestBuilder.
     /// </summary>
-    internal decimal BaseBudget { get; set; } = 0;
+    internal decimal StartingQuoteBalance { get; set; } = 10000;
 
     /// <summary>
     /// Specify the default quote input size for spot trading.
@@ -46,14 +48,16 @@ internal class SetupDefinitions
     };
 
     /// <summary>
-    /// First index of CandleData that should be evaluated
+    /// First index of CandleData that should be evaluated.
+    /// Default value defined by CreateBuilder().
     /// </summary>
-    internal int EvaluateLastIndex { get; set; } = -1;
+    internal int EvaluateLastIndex { get; set; }
 
     /// <summary>
-    /// Last index of CandleData that should be evaluated
+    /// Last index of CandleData that should be evaluated.
+    /// Default value defined by CreateBuilder().
     /// </summary>
-    internal int EvaluateFirstIndex { get; set; } = -1;
+    internal int EvaluateFirstIndex { get; set; }
 
     /// <summary>
     /// Full candle data, including unevaluated data.

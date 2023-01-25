@@ -20,7 +20,7 @@ public class MarginManager
     /// Open a margin long position at the current price with the default.
     /// </summary>
     /// <returns>Margin position id needed to close the position.</returns>
-    public uint Long()
+    public int Long()
         => Short(State.SetupConfig.DefaultMarginShortOrderSize);
 
     /// <summary>
@@ -31,7 +31,7 @@ public class MarginManager
     /// <param name="inputAmount"></param>
     /// <param name="allowPartial"></param>
     /// <returns></returns>
-    public uint Long(AmountType amountType, decimal inputBorrowAmount, bool allowPartial = true)
+    public int Long(AmountType amountType, decimal inputBorrowAmount, bool allowPartial = true)
         => Long(new TradeInput(amountType, inputBorrowAmount, allowPartial));
 
     /// <summary>
@@ -40,7 +40,7 @@ public class MarginManager
     /// </summary>
     /// <param name="tradeInput"></param>
     /// <returns>Margin position id needed to close the position.</returns>
-    public uint Long(TradeInput tradeInput)
+    public int Long(TradeInput tradeInput)
         => MarginAccess.ExecuteOpenPosition(TradeType.MarginLong, State, tradeInput);
     
 
@@ -48,7 +48,7 @@ public class MarginManager
     /// Open a margin short position at the current price with the default.
     /// </summary>
     /// <returns>Margin position id needed to close the position.</returns>
-    public uint Short()
+    public int Short()
         => Short(State.SetupConfig.DefaultMarginShortOrderSize);
 
     /// <summary>
@@ -59,7 +59,7 @@ public class MarginManager
     /// <param name="inputAmount"></param>
     /// <param name="allowPartial"></param>
     /// <returns></returns>
-    public uint Short(AmountType amountType, decimal inputBorrowAmount, bool allowPartial = true)
+    public int Short(AmountType amountType, decimal inputBorrowAmount, bool allowPartial = true)
         => Short(new TradeInput(amountType, inputBorrowAmount, allowPartial));
 
     /// <summary>
@@ -68,13 +68,13 @@ public class MarginManager
     /// </summary>
     /// <param name="tradeInput"></param>
     /// <returns>Margin position id needed to close the position.</returns>
-    public uint Short(TradeInput tradeInput)
+    public int Short(TradeInput tradeInput)
         => MarginAccess.ExecuteOpenPosition(TradeType.MarginShort, State, tradeInput);
 
     /// <summary>
     /// Close an opened margin position
     /// </summary>
     /// <param name="positionId">Id can be found when creating the position or in State</param>
-    public void ClosePosition(uint positionId)
+    public void ClosePosition(int positionId)
         => MarginAccess.ExecuteClosePosition(State, positionId);
 }

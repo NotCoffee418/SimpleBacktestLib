@@ -5,9 +5,12 @@
 /// </summary>
 public class BacktestState
 {
-    public BacktestState()
+    internal BacktestState(SetupDefinitions setupDefs)
     {
+        SetupConfig = setupDefs;
         Trade = new(this);
+        BaseBalance = setupDefs.StartingBaseBalance;
+        QuoteBalance = setupDefs.StartingQuoteBalance;
     }
     
     /// <summary>
@@ -28,8 +31,7 @@ public class BacktestState
     public int CurrentCandleIndex { get; internal set; } = -1;
 
     /// <summary>
-    /// Internal reference of instance of the trade manager, to be passed by engine to TickData as "Trade".
-    /// Instantiated by constructor.
+    /// Allows execution of trades duing the backtest in OnTick()
     /// </summary>
     public CommonTradeManager Trade { get; }
 
@@ -37,7 +39,7 @@ public class BacktestState
     /// Get all margin trades opened during the backtest so far.
     /// </summary>
     /// <returns></returns>
-    public Dictionary<uint, MarginPosition> GetAllMarginTrades()
+    public Dictionary<int, MarginPosition> GetAllMarginTrades()
         => MarginTrades.ToDictionary(x => x.Key, x => x.Value); // Cloned version
 
     /// <summary>
@@ -62,7 +64,6 @@ public class BacktestState
     public decimal GetCurrentCandlePrice()
         => GetCurrentCandle().GetPrice(SetupConfig.CandlePriceTime);
 
-
     /// <summary>
     /// Add a log entry and trigger OnLogEntry.
     /// </summary>
@@ -71,8 +72,13 @@ public class BacktestState
     public void AddLogEntry(string message, LogLevel level = LogLevel.Information)
         => LogHandler.AddLogEntry(this, message, CurrentCandleIndex, level);
 
+    /// <summary>
+    /// Get the candle currently being evaluated.
+    /// </summary>
+    /// <returns></returns>
     public BacktestCandle GetCurrentCandle()
         => SetupConfig.CandleData[CurrentCandleIndex];
+    
     /// <summary>
     /// Get all backtest candles input to the backtest.
     /// </summary>
@@ -88,21 +94,24 @@ public class BacktestState
 
     /// <summary>
     /// History of spot trades so far
+    /// Use access function instead for a cloned version during backtest.
     /// </summary>
     internal List<BacktestTrade> SpotTrades { get; } = new();
 
     /// <summary>
     /// Used to generate unique IDs for margin trades.
     /// </summary>
-    internal uint NextMarginId { get; set; } = 1;
-    
+    internal int NextMarginId { get; set; } = 1;
+
     /// <summary>
     /// History of margin trades so far and open positions
+    /// Use access function instead for a cloned version during backtest.
     /// </summary>
-    internal Dictionary<uint, MarginPosition> MarginTrades { get; } = new();
+    internal Dictionary<int, MarginPosition> MarginTrades { get; } = new();
 
     /// <summary>
     /// In-progress log. Should be modified through LogHandler and it's shortcuts only.
+    /// Use access function instead for a cloned version during backtest.
     /// </summary>
     internal List<LogEntry> LogEntries { get; } = new();
 }

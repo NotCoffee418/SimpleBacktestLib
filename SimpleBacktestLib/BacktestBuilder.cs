@@ -278,7 +278,7 @@ public class BacktestBuilder
     {
         if (quoteBudget <= 0)
             throw new ArgumentException("Quote budget must be greater than 0.");
-        BacktestSetup.QuoteBudget = quoteBudget;
+        BacktestSetup.StartingQuoteBalance = quoteBudget;
         return this;
     }
 
@@ -292,7 +292,7 @@ public class BacktestBuilder
     {
         if (baseBudget < 0)
             throw new ArgumentException("Base budget cannot be negative.");
-        BacktestSetup.BaseBudget = baseBudget;
+        BacktestSetup.StartingBaseBalance = baseBudget;
         return this;
     }
 
@@ -303,8 +303,9 @@ public class BacktestBuilder
     public async Task<BacktestResult> RunAsync()
     {
         // Validate setup
-        // todo... ensure all required properties are set
-        throw new NotImplementedException();
+        if (BacktestSetup.OnTickFunctions.Count < 1)
+            throw new ArgumentException("At least one OnTick function must be added to the backtest setup.");
+        
 
         // Run the backtest
         return await Engine.RunBacktestAsync(BacktestSetup);
@@ -315,6 +316,6 @@ public class BacktestBuilder
     /// </summary>
     /// <returns></returns>
     public BacktestResult Run()
-        => RunAsync().GetAwaiter().GetResult();
+        => RunAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 
 }
