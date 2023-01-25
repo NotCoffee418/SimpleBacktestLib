@@ -6,13 +6,76 @@
 /// </summary>
 internal static class SpotLogic
 {
+    /// <summary>
+    /// High level internal function to execute a spot buy
+    /// </summary>
+    /// <param name="state"></param>
+    /// <param name="input"></param>
+    /// <returns></returns>
     internal static bool ExecuteBuy(BacktestState state, TradeInput input)
     {
-        throw new NotImplementedException();   
+        // Check balance
+        if (state.QuoteBalance <= 0)
+        {
+            LogHandler.AddLogEntry(state, $"No quote balance available. Cannot execute buy.", state.CurrentCandleIndex, LogLevel.Error);
+            return false;
+        }
+        
+        // Execute trade
+        decimal currentPrice = state.GetCurrentCandlePrice();
+        (decimal baseGained, decimal quoteRemoved, bool usedFullRequestAmount) 
+            = TradeLogic.SimulateBuy(currentPrice, input, state.SetupConfig.SpotFees);
+
+        // Validation
+        if (quoteRemoved > state.QuoteBalance)
+        {
+            LogHandler.AddLogEntry(state, $"Insufficient quote balance to buy {input.Amount} at {currentPrice}", state.CurrentCandleIndex, LogLevel.Error);
+            return false;
+        }
+
+        // Trade successful
+        state.BaseBalance += baseGained;
+        state.QuoteBalance -= quoteRemoved;
+
+        // Log it
+        LogHandler.AddLogEntry(state, $"Bought {baseGained} Base Asset for {quoteRemoved} Quote Asset at price {currentPrice}", state.CurrentCandleIndex, LogLevel.Information);
+        return true;
     }
 
+
+    /// <summary>
+    /// High level internal function to execute a spot sell
+    /// </summary>
+    /// <param name="state"></param>
+    /// <param name="input"></param>
+    /// <returns></returns>
     internal static bool ExecuteSell(BacktestState state, TradeInput input)
     {
-        throw new NotImplementedException();
+        // Check balance
+        if (state.BaseBalance <= 0)
+        {
+            LogHandler.AddLogEntry(state, $"No base balance available. Cannot execute sell.", state.CurrentCandleIndex, LogLevel.Error);
+            return false;
+        }
+
+        // Execute trade
+        decimal currentPrice = state.GetCurrentCandlePrice();
+        (decimal baseRemoved, decimal quoteGained, bool usedFullRequestAmount)
+            = TradeLogic.SimulateSell(currentPrice, input, state.SetupConfig.SpotFees);
+
+        // Validation
+        if (baseRemoved > state.BaseBalance)
+        {
+            LogHandler.AddLogEntry(state, $"Insufficient base balance to sell {input.Amount} at {currentPrice}", state.CurrentCandleIndex, LogLevel.Error);
+            return false;
+        }
+
+        // Trade successful
+        state.BaseBalance -= baseRemoved;
+        state.QuoteBalance += quoteGained;
+
+        // Log it
+        LogHandler.AddLogEntry(state, $"Sold {baseRemoved} Base Asset for {quoteGained} Quote Asset at price {currentPrice}", state.CurrentCandleIndex, LogLevel.Information);
+        return true;
     }
 }

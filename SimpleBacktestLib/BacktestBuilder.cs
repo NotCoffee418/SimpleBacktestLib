@@ -16,6 +16,11 @@ public class BacktestBuilder
     private SetupDefinitions BacktestSetup { get; } = new();
 
     /// <summary>
+    /// Helps to remove default fee when user specifies fees.
+    /// </summary>
+    private bool IsDefaultSpotFeeReset { get; set; } = false;
+
+    /// <summary>
     /// Create a backtest builder with the provided candle data and default settings.
     /// </summary>
     /// <returns></returns>
@@ -145,13 +150,13 @@ public class BacktestBuilder
     /// By default, it will use the full available balance (Max).
     /// This can be overridden in the trading strategy.
     /// </summary>
-    /// <param name="type">Define the meaning of the amount</param>
+    /// <param name="amountType">Define the meaning of the amount</param>
     /// <param name="amount">Amount or value</param>
     /// <param name="allowPartial">When false, an exception is thrown instead</param>
     /// <returns></returns>
-    public BacktestBuilder WithDefaultSpotBuyOrderSize(AmountType type, decimal amount, bool allowPartial = true)
+    public BacktestBuilder WithDefaultSpotBuyOrderSize(AmountType amountType, decimal amount, bool allowPartial = true)
     {
-        BacktestSetup.DefaultSpotBuyOrderSize = new TradeInput(type, amount, allowPartial);
+        BacktestSetup.DefaultSpotBuyOrderSize = new TradeInput(amountType, amount, allowPartial);
         return this;
     }
 
@@ -160,13 +165,50 @@ public class BacktestBuilder
     /// By default, it will use the full available balance (Max).
     /// This can be overridden in the trading strategy.
     /// </summary>
-    /// <param name="type">Define the meaning of the amount</param>
+    /// <param name="amountType">Define the meaning of the amount</param>
     /// <param name="amount">Amount or value</param>
     /// <param name="allowPartial">When false, an exception is thrown instead</param>
     /// <returns></returns>
-    public BacktestBuilder WithDefaultSpotSellOrderSize(AmountType type, decimal amount, bool allowPartial = true)
+    public BacktestBuilder WithDefaultSpotSellOrderSize(AmountType amountType, decimal amount, bool allowPartial = true)
     {
-        BacktestSetup.DefaultSpotSellOrderSize = new TradeInput(type, amount, allowPartial);
+        BacktestSetup.DefaultSpotSellOrderSize = new TradeInput(amountType, amount, allowPartial);
+        return this;
+    }
+
+
+    /// <summary>
+    /// Add a custom spot fee that will be applied to each spot trade.
+    /// By default, a 0.1% fee is applied to all trades.
+    /// 
+    /// NOTE! When adding adding any custom fees, the default 0.1% fee will be removed.
+    /// If you wish to retain it, it should be manually added again.
+    /// 
+    /// Multiple fees can be applied to each trade. They will be executed in the order they were added.
+    /// </summary>
+    /// <param name="amountType">Define the meaning of the amount</param>
+    /// <param name="amount">Amount or value</param>
+    /// <param name="feeSource">From which asset(s) is the fee paid?</param>
+    /// <returns></returns>
+    public BacktestBuilder AddSpotFee(AmountType amountType, decimal amount, FeeSource feeSource)
+    {
+        // Remove the default spot fee when user adds their own fee
+        if (!IsDefaultSpotFeeReset)
+        {
+            _ = RemoveSpotFees();
+            IsDefaultSpotFeeReset = true;
+        }
+
+        BacktestSetup.SpotFees.Add(new(amountType, amount, feeSource));
+        return this;
+    }
+
+    /// <summary>
+    /// Remove all spot trading fees.
+    /// </summary>
+    /// <returns></returns>
+    public BacktestBuilder RemoveSpotFees()
+    {
+        BacktestSetup.SpotFees.Clear();
         return this;
     }
 

@@ -3,6 +3,35 @@
 internal static class ValueAssessment
 {
     /// <summary>
+    /// Calculate the output of a trade factoring in fees, optionally in both directions.
+    /// </summary>
+    /// <param name="operation"></param>
+    /// <param name="inputAmount"></param>
+    /// <param name="quotePrice"></param>
+    /// <param name="literalBaseFees"></param>
+    /// <param name="literalQuoteFees"></param>
+    /// <returns></returns>
+    internal static decimal CalcTradeOutput(
+        TradeOperation operation, 
+        decimal inputAmount,
+        decimal quotePrice,
+        decimal literalBaseFees,
+        decimal literalQuoteFees)
+    {
+        switch (operation)
+        {
+            case TradeOperation.Buy:
+                return CalcBase(inputAmount - literalQuoteFees, quotePrice) - literalBaseFees;
+
+            case TradeOperation.Sell:
+                return CalcQuote(inputAmount - literalBaseFees, quotePrice) - literalQuoteFees;
+
+            default:
+                throw new ArgumentOutOfRangeException("Invalid TradeOperation");
+        }
+    }
+    
+    /// <summary>
     /// Get the combined value of both assets in the defined asset type.
     /// Example: 
     /// baseAmount: 0.6, quoteAmount: 600, price: 1000.
@@ -37,5 +66,6 @@ internal static class ValueAssessment
     /// <returns></returns>
     internal static decimal CalcQuote(decimal baseAmount, decimal quotePrice)
         => baseAmount * quotePrice;
-    
+
+
 }

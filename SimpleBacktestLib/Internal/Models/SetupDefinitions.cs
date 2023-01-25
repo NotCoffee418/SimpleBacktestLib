@@ -39,6 +39,13 @@ internal class SetupDefinitions
     internal TradeInput DefaultMarginShortOrderSize { get; set; } = new(AmountType.Max, 0);
 
     /// <summary>
+    /// Fees applied to spot trades, in order.
+    /// </summary>
+    internal List<Fee> SpotFees { get; set; } = new() { 
+        new(AmountType.Percentage, 0.1m, FeeSource.Base) 
+    };
+
+    /// <summary>
     /// First index of CandleData that should be evaluated
     /// </summary>
     internal int EvaluateLastIndex { get; set; } = -1;
