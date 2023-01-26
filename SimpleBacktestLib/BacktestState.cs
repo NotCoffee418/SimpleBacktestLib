@@ -138,5 +138,4 @@ public class BacktestState
     /// Optional custom data data that can be used to store information between ticks.
     /// </summary>
     internal object? CustomData { get; set; } = null;
-
 }

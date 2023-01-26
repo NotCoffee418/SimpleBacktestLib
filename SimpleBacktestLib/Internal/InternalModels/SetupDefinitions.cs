@@ -1,7 +1,4 @@
-﻿using SimpleBacktestLib.Models;
-using SimpleBacktestLib.TradingManagers;
-
-namespace SimpleBacktestLib.Internal.InternalModels;
+﻿namespace SimpleBacktestLib.Internal.InternalModels;
 
 /// <summary>
 /// Internal-only setup properties.

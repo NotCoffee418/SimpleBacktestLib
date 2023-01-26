@@ -1,7 +1,17 @@
 # SimpleBacktestLib
-SimpleBacktestLib is a functional C# library for backtesting trading strategies. It offers basic functions to simulate strategy performance and can be integrated into other C# projects.
+SimpleBacktestLib is a C# library for backtesting trading strategies. It offers basic functions to simulate strategy performance and can be integrated into other C# projects.
 
-**WIP** This project is a work in progress. The API is not stable and may change in the future.1
+By design, it offers a minimal set of features without getting in your way. It is not a full-featured trading platform, but rather a tool to help you develop and test your strategies.
 
-# Documentation
-You can find the documentation [here](https://notcoffee418.github.io/SimpleBacktestLib/).
+## Features
+- Simple by design
+- Perform backtests on historical data 
+- Simulate spot and margin trading
+- Simulate trading fees
+- Configurable environment
+
+## Installation
+Install the package from [NuGet](https://www.nuget.org/packages/SimpleBacktestLib)
+
+## Documentation
+For more information and instructions, see the [documentation](https://notcoffee418.github.io/SimpleBacktestLib/).
