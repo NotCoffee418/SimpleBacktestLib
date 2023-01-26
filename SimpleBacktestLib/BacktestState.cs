@@ -35,6 +35,7 @@ public class BacktestState
     /// </summary>
     public CommonTradeManager Trade { get; }
 
+
     /// <summary>
     /// Get all margin trades opened during the backtest so far.
     /// </summary>
@@ -71,6 +72,24 @@ public class BacktestState
     /// <param name="level"></param>
     public void AddLogEntry(string message, LogLevel level = LogLevel.Information)
         => LogHandler.AddLogEntry(this, message, CurrentCandleIndex, level);
+    
+    /// <summary>
+    /// Get custom data stored in memory between ticks.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public T GetCustomData<T>()
+        where T : class
+        => CustomData as T;
+
+    /// <summary>
+    /// Set custom data accessible from memory between ticks.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="data"></param>
+    public void SetCustomData<T>(T data)
+        where T : class
+        => CustomData = data;
 
     /// <summary>
     /// Get the candle currently being evaluated.
@@ -114,4 +133,10 @@ public class BacktestState
     /// Use access function instead for a cloned version during backtest.
     /// </summary>
     internal List<LogEntry> LogEntries { get; } = new();
+
+    /// <summary>
+    /// Optional custom data data that can be used to store information between ticks.
+    /// </summary>
+    internal object? CustomData { get; set; } = null;
+
 }
