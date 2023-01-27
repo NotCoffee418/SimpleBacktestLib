@@ -15,4 +15,5 @@ By design, it offers a minimal set of features without getting in your way. It i
 - Configurable environment
 
 ## Getting Started
-To get started, check the [getting started](getting-started.md) page.
+To get started, see the [getting started](getting-started.md) page.  
+You can also check out the [demo project](https://github.com/NotCoffee418/SimpleBacktestLib/blob/dev/SimpleBacktestLib.Demo/Program.cs) for a practical example.

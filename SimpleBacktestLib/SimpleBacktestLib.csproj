@@ -4,10 +4,28 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Title>SimpleBacktestLib</Title>
+    <Authors>Stijn Raeymaekers</Authors>
+    <Description>Minimalist backtesting library to quickly test trading strategies in .NET</Description>
+    <PackageProjectUrl>https://notcoffee418.github.io/SimpleBacktestLib</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/NotCoffee418/SimpleBacktestLib</RepositoryUrl>
+    <PackageTags>backtesting, trading</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	<Exec Command="dotnet pack &quot;$(SolutionDir)SimpleBacktestLib/SimpleBacktestLib.csproj&quot; -p:PackageVersion=$([System.DateTime]::Now.ToString(&quot;yyyy.MM.dd.HHmm&quot;)) --no-build --configuration $(Configuration) --output &quot;$(SolutionDir)nuget&quot;" />
+  </Target>
 </Project>
