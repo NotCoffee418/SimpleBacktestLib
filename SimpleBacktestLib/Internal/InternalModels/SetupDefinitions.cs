@@ -95,5 +95,5 @@ internal class SetupDefinitions
     /// <summary>
     /// Custom data to be passed to the first tick
     /// </summary>
-    internal object InitialCustomData { get; internal set; }
+    internal object InitialCustomData { get; set; }
 }
