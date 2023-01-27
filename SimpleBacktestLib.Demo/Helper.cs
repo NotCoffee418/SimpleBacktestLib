@@ -1,4 +1,8 @@
-﻿namespace SimpleBacktestLib.Demo;
+﻿using CsvHelper;
+using System.Globalization;
+using System.IO.Compression;
+
+namespace SimpleBacktestLib.Demo;
 
 internal static class Helper
 {
