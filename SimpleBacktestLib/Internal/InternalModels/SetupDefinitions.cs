@@ -6,6 +6,7 @@
 /// </summary>
 internal class SetupDefinitions
 {
+
     /// <summary>
     /// Available base budget. 
     /// This does not track any changes and should only be set in BacktestBuilder.
@@ -90,4 +91,9 @@ internal class SetupDefinitions
     /// Ratio below which the margin position will liquidate
     /// </summary>
     internal decimal MarginLiquidationRatio { get; set; } = 0.1m;
+
+    /// <summary>
+    /// Custom data to be passed to the first tick
+    /// </summary>
+    internal object InitialCustomData { get; internal set; }
 }

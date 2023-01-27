@@ -297,6 +297,18 @@ public class BacktestBuilder
     }
 
     /// <summary>
+    /// Set the initial value of the custom data object.
+    /// </summary>
+    /// <typeparam name="T">Any object type</typeparam>
+    /// <param name="value">Value at the start of the backtest</param>
+    /// <returns></returns>
+    public BacktestBuilder WithInitialCustomData<T>(T value)
+    {
+        BacktestSetup.InitialCustomData = value;
+        return this;
+    }
+
+    /// <summary>
     /// Run the backtest asynchronously.
     /// </summary>
     /// <returns></returns>

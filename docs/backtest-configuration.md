@@ -88,3 +88,6 @@ For more information on the `AmountType` enum, see [here](type-tradeinput-fee.md
 
 #### RemoveSpotFees()
 Removes the default spot fees from the backtest.
+
+### WithInitialCustomData(object data)
+Sets the initial custom data object to be used in the backtest.

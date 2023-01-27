@@ -11,6 +11,8 @@ public class BacktestState
         Trade = new(this);
         BaseBalance = setupDefs.StartingBaseBalance;
         QuoteBalance = setupDefs.StartingQuoteBalance;
+        CustomData = setupDefs.InitialCustomData;
+        setupDefs.InitialCustomData = null; // In case reference is overwritten and data is large
     }
     
     /// <summary>
