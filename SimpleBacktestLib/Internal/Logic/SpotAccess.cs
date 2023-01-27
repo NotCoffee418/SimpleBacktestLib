@@ -24,7 +24,7 @@ internal static class SpotAccess
         // Execute trade
         decimal currentPrice = state.GetCurrentCandlePrice();
         (decimal baseGained, decimal quoteRemoved, bool usedFullRequestAmount) 
-            = TradeLogic.SimulateBuy(currentPrice, input, state.SetupConfig.SpotFees);
+            = TradeLogic.SimulateBuy(currentPrice, state.QuoteBalance, input, state.SetupConfig.SpotFees);
 
         // Validation
         if (quoteRemoved > state.QuoteBalance)
@@ -68,7 +68,7 @@ internal static class SpotAccess
         // Execute trade
         decimal currentPrice = state.GetCurrentCandlePrice();
         (decimal baseRemoved, decimal quoteGained, bool usedFullRequestAmount)
-            = TradeLogic.SimulateSell(currentPrice, input, state.SetupConfig.SpotFees);
+            = TradeLogic.SimulateSell(currentPrice, state.BaseBalance, input, state.SetupConfig.SpotFees);
 
         // Validation
         if (baseRemoved > state.BaseBalance)

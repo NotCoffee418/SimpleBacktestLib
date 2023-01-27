@@ -49,7 +49,7 @@ public class SpotManager
     /// </summary>
     /// <returns>Trade successfully executed?</returns>
     public bool Sell()
-        => Buy(State.SetupConfig.DefaultSpotSellOrderSize);
+        => Sell(State.SetupConfig.DefaultSpotSellOrderSize);
     
     /// <summary>
     /// Sell a custom amount

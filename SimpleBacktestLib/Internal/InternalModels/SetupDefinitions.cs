@@ -60,7 +60,7 @@ internal class SetupDefinitions
     /// <summary>
     /// Full candle data, including unevaluated data.
     /// </summary>
-    internal ImmutableList<BacktestCandle> CandleData { get; set; }
+    internal List<BacktestCandle> CandleData { get; set; }
 
     /// <summary>
     /// Tick functions that should be called, in order.

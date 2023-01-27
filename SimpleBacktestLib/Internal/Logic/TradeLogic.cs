@@ -9,14 +9,15 @@ internal static class TradeLogic
     /// Calculate the assets gained and removed from buying after fees.
     /// </summary>
     /// <param name="quotePrice"></param>
+    /// <param name="usableBalance"></param>
     /// <param name="input"></param>
     /// <param name="fees"></param>
     /// <returns>Positive values changed amounts</returns>
     internal static (decimal BaseGained, decimal QuoteRemoved, bool IsFullRequestedValueUsed) 
-        SimulateBuy(decimal quotePrice, TradeInput input, List<Fee> fees)
+        SimulateBuy(decimal quotePrice, decimal usableBalance, TradeInput input, List<Fee> fees)
     {
         // Calculate fees
-        (decimal literalInputBeforeFees, bool isFullValue) = input.GetLiteralValue(quotePrice);
+        (decimal literalInputBeforeFees, bool isFullValue) = input.GetLiteralValue(usableBalance);
         (decimal literalBaseFees, decimal literalQuoteFees) = FeeLogic.CalculateCombinedFees(
             fees, TradeType.SpotBuy, literalInputBeforeFees, quotePrice);
         decimal inputAmountAfterQuoteFee = literalInputBeforeFees - literalQuoteFees;
@@ -36,13 +37,15 @@ internal static class TradeLogic
     /// Calculate the assets gained and removed from selling after fees.
     /// </summary>
     /// <param name="quotePrice"></param>
+    /// <param name="usableBalance"></param>
     /// <param name="input"></param>
     /// <param name="fees"></param>
     /// <returns>Positive values changed amounts</returns>
-    internal static (decimal BaseRemoved, decimal QuoteGained, bool IsFullRequestedValueUsed) SimulateSell(decimal quotePrice, TradeInput input, List<Fee> fees)
+    internal static (decimal BaseRemoved, decimal QuoteGained, bool IsFullRequestedValueUsed) SimulateSell(
+        decimal quotePrice, decimal usableBalance, TradeInput input, List<Fee> fees)
     {
         // Calculate fees
-        (decimal literalInputBeforeFees, bool isFullValue) = input.GetLiteralValue(quotePrice);
+        (decimal literalInputBeforeFees, bool isFullValue) = input.GetLiteralValue(usableBalance);
         (decimal literalBaseFees, decimal literalQuoteFees) = FeeLogic.CalculateCombinedFees(
             fees, TradeType.SpotSell, literalInputBeforeFees, quotePrice);
         decimal inputAmountAfterBaseFee = literalInputBeforeFees - literalBaseFees;

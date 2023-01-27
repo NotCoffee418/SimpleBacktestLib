@@ -26,7 +26,7 @@ public class BacktestBuilder
     /// Create a backtest builder with the provided candle data and default settings.
     /// </summary>
     /// <returns></returns>
-    public static BacktestBuilder CreateBuilder(IEnumerable<BacktestCandle> candleData)
+    public static BacktestBuilder CreateBuilder(List<BacktestCandle> candleData)
     {
         BacktestBuilder btb = new();
         
@@ -47,7 +47,7 @@ public class BacktestBuilder
             }
 
         // Set data
-        btb.BacktestSetup.CandleData = candleData.ToImmutableList();
+        btb.BacktestSetup.CandleData = candleData;
 
         // Set default evaluate time at the last month of data.
         DateTime endEvaluateTime = candleData.Last().Time;

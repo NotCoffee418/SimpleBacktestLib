@@ -2,7 +2,6 @@
 
 The `BacktestResult` class is a record that contains the results of a backtest. It contains the following properties:
 
-- `TotalProfitInBase`: The total profit made during the backtest, expressed in the base asset. This factors in the value of the entire balance (quote and base).
 - `TotalProfitInQuote`: The total profit made during the backtest, expressed in the quote asset. This factors in the value of the entire balance (quote and base).
 - `ProfitRatio`: The ratio of total gain or loss throughout the backtest.
 - `BuyAndHoldProfitRatio`: The ratio of total gains or loss that would have occurred when buying and holding the asset instead of trading.

@@ -18,7 +18,7 @@ public class TradeLogicTests
         Fee baseFee = new Fee(AmountType.Percentage, pctBaseFee, FeeSource.Base);
         Fee quoteFee = new Fee(AmountType.Percentage, pctQuoteFee, FeeSource.Quote);
         (decimal baseGained, decimal quoteRemoved, bool fullInputUsed) = TradeLogic.SimulateBuy(
-            quotePrice, tradeInput, new() { baseFee, quoteFee });
+            quotePrice, inputAmount, tradeInput, new() { baseFee, quoteFee });
         
         Assert.True(fullInputUsed);
         Assert.Equal(inputAmount, quoteRemoved); // Full input should be consumed
@@ -41,7 +41,7 @@ public class TradeLogicTests
         Fee baseFee = new Fee(AmountType.Percentage, pctBaseFee, FeeSource.Base);
         Fee quoteFee = new Fee(AmountType.Percentage, pctQuoteFee, FeeSource.Quote);
         (decimal baseRemoved, decimal quoteGained, bool fullInputUsed) = TradeLogic.SimulateSell(
-            quotePrice, tradeInput, new() { baseFee, quoteFee });
+            quotePrice, inputAmount, tradeInput, new() { baseFee, quoteFee });
 
         Assert.True(fullInputUsed);
         Assert.Equal(inputAmount, baseRemoved); // Full input should be consumed

@@ -11,26 +11,24 @@ public record BacktestResult
         decimal finalPrice = finalCandle.GetPrice(state.SetupConfig.CandlePriceTime);
 
         // Calculate profits
-        decimal combinedStartBaseBalance = ValueAssessment.GetCombinedValue(
-            AssetType.Base,
+        decimal combinedStartQuoteBalance = ValueAssessment.GetCombinedValue(
+            AssetType.Quote,
             state.SetupConfig.StartingBaseBalance,
             state.SetupConfig.StartingQuoteBalance,
             startPrice);
-        decimal combinedFinalBaseBalance = ValueAssessment.GetCombinedValue(
-            AssetType.Base,
+        decimal combinedFinalQuoteBalance = ValueAssessment.GetCombinedValue(
+            AssetType.Quote,
             state.BaseBalance,
             state.QuoteBalance,
             finalPrice);
-        decimal baseProfit = combinedFinalBaseBalance - combinedStartBaseBalance;
-        decimal quoteProfit = ValueAssessment.CalcQuote(baseProfit, finalPrice);
-        decimal profitRatio = ValueAssessment.GetProfitRatio(combinedStartBaseBalance, combinedFinalBaseBalance);
+        decimal quoteProfit = combinedFinalQuoteBalance - combinedStartQuoteBalance;
+        decimal profitRatio = ValueAssessment.GetProfitRatio(combinedStartQuoteBalance, combinedFinalQuoteBalance);
         decimal buyAndHoldProfitRatio = ValueAssessment.GetProfitRatio(startPrice, finalPrice);
 
 
         // Create the object
         return new BacktestResult
         {
-            TotalProfitInBase = baseProfit,
             TotalProfitInQuote = quoteProfit,
             ProfitRatio = profitRatio,
             BuyAndHoldProfitRatio = buyAndHoldProfitRatio,
@@ -44,13 +42,6 @@ public record BacktestResult
             LastCandleTime = finalCandle.Time,
         };
     }
-
-
-    /// <summary>
-    /// Total profit made during the backtest expressed in base asset.
-    /// This factors in the value of your entire balance (quote and base).
-    /// </summary>
-    public decimal TotalProfitInBase { get; private set; }
 
     /// <summary>
     /// Total profit made during the backtest expressed in quote asset.

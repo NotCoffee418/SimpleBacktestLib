@@ -4,7 +4,30 @@
 /// This class is allowed to modify state.
 /// </summary>
 internal static class MarginLogic
-{    
+{   
+    /// <summary>
+    /// Check if a position is liquid and close it if needed.
+    /// </summary>
+    /// <param name="pos"></param>
+    /// <param name="state"></param>
+    /// <returns>True if liquid. False if illiquid + closed</returns>
+    internal static bool LiquidityCheckAndClose(MarginPosition pos, BacktestState state)
+    {
+        decimal tickPrice = state.GetCurrentCandlePrice();
+        (bool isLiquid, decimal newBase, decimal newQuote) = CalculateUnrealizedBalances(
+            pos, tickPrice, state.BaseBalance, state.QuoteBalance);
+        if (isLiquid) return true;
+
+        // Was illiquid, close the position
+        LogHandler.AddLogEntry(state, 
+            $"Liquidating margin position. New balances are {newBase} Base and {newQuote} Quote.", 
+            state.CurrentCandleIndex, LogLevel.Warning);
+        state.BaseBalance = newBase;
+        state.QuoteBalance = newQuote;
+        pos.MarkAsClosed();
+        return false;
+    }
+
     /// <summary>
     /// Calculate unrealized balances factoring in this margin position.
     /// Returns the balances as they would be if the position were closed right now.

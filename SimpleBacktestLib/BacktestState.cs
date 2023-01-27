@@ -74,7 +74,7 @@ public class BacktestState
     /// <param name="level"></param>
     public void AddLogEntry(string message, LogLevel level = LogLevel.Information)
         => LogHandler.AddLogEntry(this, message, CurrentCandleIndex, level);
-    
+
     /// <summary>
     /// Get custom data stored in memory between ticks.
     /// </summary>
@@ -82,7 +82,7 @@ public class BacktestState
     /// <returns></returns>
     public T GetCustomData<T>()
         where T : class
-        => CustomData as T;
+        => (T)CustomData;
 
     /// <summary>
     /// Set custom data accessible from memory between ticks.
@@ -104,7 +104,7 @@ public class BacktestState
     /// Get all backtest candles input to the backtest.
     /// </summary>
     /// <returns></returns>
-    public ImmutableList<BacktestCandle> GetAllBacktestCandles()
+    public List<BacktestCandle> GetAllBacktestCandles()
         => SetupConfig.CandleData;
 
     /// <summary>
@@ -139,5 +139,5 @@ public class BacktestState
     /// <summary>
     /// Optional custom data data that can be used to store information between ticks.
     /// </summary>
-    internal object? CustomData { get; set; } = null;
+    internal object? CustomData { get; set; }
 }

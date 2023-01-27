@@ -16,10 +16,4 @@
     <ProjectReference Include="..\SimpleBacktestLib\SimpleBacktestLib.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="sample-data.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>
