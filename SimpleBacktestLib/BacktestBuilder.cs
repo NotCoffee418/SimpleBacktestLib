@@ -50,9 +50,9 @@ public class BacktestBuilder
         btb.BacktestSetup.CandleData = candleData;
 
         // Set default evaluate time at the last month of data.
-        DateTime endEvaluateTime = candleData.Last().Time;
-        DateTime startEvaluateTime = endEvaluateTime.AddDays(-30);
-        return btb.EvaluateBetween(startEvaluateTime, endEvaluateTime);
+        btb.BacktestSetup.EvaluateFirstIndex = 0;
+        btb.BacktestSetup.EvaluateLastIndex = candleData.Count - 1;
+        return btb;
     }
 
     /// <summary>
