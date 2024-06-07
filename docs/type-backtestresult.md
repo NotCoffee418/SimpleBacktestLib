@@ -15,6 +15,6 @@ The `BacktestResult` class is a record that contains the results of a backtest. 
 - `LastCandleTime`: The timestamp of the last candle that was evaluated during the backtest.
 - `EvaluatedCandleTimespan()`: A method that returns the time between the first and last candle that was evaluated, represented as a `TimeSpan` object.
 
-All properties ave a private setter, meaning that they can be set only by the class that creates the BacktestResult object.
+All properties have a private setter, meaning that they can be set only by the class that creates the BacktestResult object.
 
-This class can be used access results of a backtest and evaluate the performance of your strategy.
+This class can be used to access results of a backtest and evaluate the performance of your strategy.
