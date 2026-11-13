@@ -21,7 +21,7 @@ public class MarginManager
     /// </summary>
     /// <returns>Margin position id needed to close the position.</returns>
     public int Long()
-        => Short(State.SetupConfig.DefaultMarginShortOrderSize);
+        => Long(State.SetupConfig.DefaultMarginLongOrderSize);
 
     /// <summary>
     /// Open a margin long position at the current price with a custom amount.
