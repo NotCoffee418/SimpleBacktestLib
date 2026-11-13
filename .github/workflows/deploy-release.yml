@@ -8,18 +8,26 @@ jobs:
   build:
     name: Build and Test
     runs-on: ubuntu-latest
+    environment: deploy
+    permissions:
+      contents: read
+      id-token: write   # required so GitHub will issue the OIDC token
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v7
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v6
       with:
-        dotnet-version: '7.0.x'
-        include-prerelease: true
+        dotnet-version: '11.0.x'
     - name: Install dependencies
       run: dotnet restore
     - name: Build and Pack
       run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test --no-restore --verbosity normal
-    - name: Publish to Nuget
-      run: dotnet nuget push nuget/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate 
+    - name: NuGet login (OIDC → temp API key)
+      id: login
+      uses: NuGet/login@v1
+      with:
+        user: notcoffee418
+    - name: Publish to NuGet
+      run: dotnet nuget push nuget/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --skip-duplicate

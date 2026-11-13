@@ -2,11 +2,16 @@
 
 public class TradeLogicTests
 {
+    public static TheoryData<decimal, decimal, decimal, decimal, decimal> BuyCases => new()
+    {
+        { 1000m, 100m, 0m, 1m, 0.099m },
+        { 1000m, 100m, 1m, 0m, 0.099m },
+        { 1000m, 100m, 1m, 1m, 0.098m },
+        { 1000m, 100m, 0m, 0m, 0.1m },
+    };
+
     [Theory]
-    [InlineData(1000, 100, 0, 1, 0.099)]
-    [InlineData(1000, 100, 1, 0, 0.099)]
-    [InlineData(1000, 100, 1, 1, 0.098)]
-    [InlineData(1000, 100, 0, 0, 0.1)]
+    [MemberData(nameof(BuyCases))]
     public void SimulateBuy_SingleQuoteFee(
         decimal quotePrice,
         decimal inputAmount,
@@ -19,17 +24,22 @@ public class TradeLogicTests
         Fee quoteFee = new Fee(AmountType.Percentage, pctQuoteFee, FeeSource.Quote);
         (decimal baseGained, decimal quoteRemoved, bool fullInputUsed) = TradeLogic.SimulateBuy(
             quotePrice, inputAmount, tradeInput, new() { baseFee, quoteFee });
-        
+
         Assert.True(fullInputUsed);
         Assert.Equal(inputAmount, quoteRemoved); // Full input should be consumed
         Assert.Equal(expectedBaseGained, baseGained);
     }
 
+    public static TheoryData<decimal, decimal, decimal, decimal, decimal> SellCases => new()
+    {
+        { 1000m, 0.1m, 0m, 1m, 99m },
+        { 1000m, 0.1m, 1m, 0m, 99m },
+        { 1000m, 0.1m, 1m, 1m, 98m },
+        { 1000m, 0.1m, 0m, 0m, 100m },
+    };
+
     [Theory]
-    [InlineData(1000, 0.1, 0, 1, 99)]
-    [InlineData(1000, 0.1, 1, 0, 99)]
-    [InlineData(1000, 0.1, 1, 1, 98)]
-    [InlineData(1000, 0.1, 0, 0, 100)]
+    [MemberData(nameof(SellCases))]
     public void SimulateSell_SingleQuoteFee(
         decimal quotePrice,
         decimal inputAmount,

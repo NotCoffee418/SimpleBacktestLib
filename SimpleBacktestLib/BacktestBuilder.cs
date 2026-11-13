@@ -304,6 +304,8 @@ public class BacktestBuilder
     /// <returns></returns>
     public BacktestBuilder WithInitialCustomData<T>(T value)
     {
+        if (value is null)
+            throw new ArgumentException("Initial custom data cannot be null.");
         BacktestSetup.InitialCustomData = value;
         return this;
     }

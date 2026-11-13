@@ -61,10 +61,18 @@ internal static class Helper
     /// <returns></returns>
     public static async Task GenerateCandleDataFromBinance(string binanceDataCsvPath)
     {
+        var csvWriterOpt = new CsvWriterOptions
+        {
+            FormatProvider = CultureInfo.InvariantCulture,
+        };
+        var csvReaderOpt = new CsvReaderOptions
+        {
+            FormatProvider = CultureInfo.InvariantCulture,
+        };
+
         List<dynamic> rawBinanceData;
-        using (var reader = new StreamReader(binanceDataCsvPath))
-            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-                rawBinanceData = await csv.GetRecordsAsync<dynamic>().ToListAsync();
+        using (var reader = CsvReader.FromFile(binanceDataCsvPath, csvReaderOpt))
+            rawBinanceData = await reader.GetRecordsAsync<dynamic>().ToListAsync();
 
         long openTimeMs;
         List<BacktestCandle> btCandles = rawBinanceData
@@ -83,21 +91,15 @@ internal static class Helper
                 Time = DateTimeOffset.FromUnixTimeMilliseconds(Convert.ToInt64(x.open_time)).DateTime
             }).ToList();
 
-        using (var writer = new StreamWriter("sample-data.csv"))
-        using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+        using (var writer = CsvWriter.ToFile("sample-data.csv", csvWriterOpt))
         {
-            csv.WriteHeader<BacktestCandle>();
-            csv.NextRecord();
+            writer.WriteHeader<BacktestCandle>();
+            writer.EndRecord();
             foreach (var record in btCandles)
             {
-                csv.WriteRecord(record);
-                csv.NextRecord();
+                writer.WriteRecord(record);
+                writer.EndRecord();
             }
         }
-        return;
-
-
-
-
     }
 }

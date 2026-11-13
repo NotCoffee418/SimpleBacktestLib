@@ -4,7 +4,6 @@ using SimpleBacktestLib.Demo;
 using System.Globalization;
 using System.Text;
 
-
 // Download trading data (sample BTCUSD from binance)
 string dateFilename = "btcusd-sample.csv";
 string sourceUrl = "https://notcoffee418-github-demo-data.s3.eu-central-1.amazonaws.com/btcusd-sample.zip";
@@ -15,13 +14,27 @@ while (!gotData)
     gotData = await Helper.DownloadAndUnzipFile(sourceUrl, dateFilename);
 }
 
-// Load candle data
-Console.WriteLine("Configuring Backtest...");
-List<BacktestCandle> candleData;
-using (var reader = new StreamReader(dateFilename))
-    using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-        candleData = await csv.GetRecordsAsync<BacktestCandle>().ToListAsync();
 
+// Load candle data (intermediate type for CsvHelper)
+Console.WriteLine("Configuring Backtest...");
+var options = new CsvReaderOptions { FormatProvider = CultureInfo.InvariantCulture };
+var candleData = new List<BacktestCandle>();
+
+using (var csv = CsvReader.FromFile(dateFilename, options))
+{
+    while (csv.Read())
+    {
+        candleData.Add(new BacktestCandle
+        {
+            Time = csv.Parse<DateTime>("Time"),
+            Open = csv.Parse<decimal>("Open"),
+            High = csv.Parse<decimal>("High"),
+            Low = csv.Parse<decimal>("Low"),
+            Close = csv.Parse<decimal>("Close"),
+            Volume = csv.Parse<decimal>("Volume"),
+        });
+    }
+}
 
 // Configure the backtest
 BacktestBuilder builder = BacktestBuilder.CreateBuilder(candleData)
